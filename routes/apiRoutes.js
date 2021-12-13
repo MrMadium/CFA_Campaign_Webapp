@@ -48,38 +48,38 @@ api.post('/applianceClasses/new', apiSecured, api_controller.newApplianceClass)
 
 api.delete('/applianceClasses/:id', apiSecured, api_controller.removeApplianceClass)
 
-api.get('/brigades', apiSecured, apiSecured, api_controller.getBrigades)
+api.get('/brigades', apiSecured, api_controller.getBrigades)
 
-api.post('/brigades/new', apiSecured, apiSecured, api_controller.newBrigade)
+api.post('/brigades/new', apiSecured, api_controller.newBrigade)
 
-api.get('/brigades/:id', apiSecured, apiSecured, api_controller.getBrigade)
+api.get('/brigades/:id', apiSecured, api_controller.getBrigade)
 
-api.post('/brigades/:id', apiSecured, apiSecured, api_controller.updateBrigade)
+api.post('/brigades/:id', apiSecured, api_controller.updateBrigade)
 
-api.delete('/brigades/:id', apiSecured, apiSecured, api_controller.removeBrigade)
+api.delete('/brigades/:id', apiSecured, api_controller.removeBrigade)
 
-api.get('/campaigns', apiSecured, apiSecured, api_controller.getCampaigns)
+api.get('/campaigns', apiSecured, api_controller.getCampaigns)
 
 api.get('/campaigns/brigade/:id', apiSecured, api_controller.getCampaignsByBrigade)
 
-api.get('/campaigns/:id', apiSecured, apiSecured, api_controller.getCampaign)
+api.get('/campaigns/:id', apiSecured, api_controller.getCampaign)
 
-api.put('/campaigns/:id', apiSecured, apiSecured, api_controller.updateCampaign)
+api.put('/campaigns/:id', apiSecured, api_controller.updateCampaign)
 
-api.post('/campaigns/new', apiSecured, apiSecured, api_controller.newCampaign)
+api.post('/campaigns/new', apiSecured, api_controller.newCampaign)
 
-api.delete('/campaigns/:id', apiSecured, apiSecured, api_controller.removeCampaign)
+api.delete('/campaigns/:id', apiSecured, api_controller.removeCampaign)
 
-api.get('/routes', apiSecured, apiSecured, api_controller.getRoutes)
+api.get('/routes', apiSecured, api_controller.getRoutes)
 
 api.get('/routes/campaign/:campaignId', apiSecured, api_controller.getRoutesByCampaign)
 
-api.get('/routes/:id', apiSecured, apiSecured, api_controller.getRoute)
+api.get('/routes/:id', apiSecured, api_controller.getRoute)
 
-api.put('/routes/:id', apiSecured, apiSecured, api_controller.updateRoute)
+api.put('/routes/:id', apiSecured, api_controller.updateRoute)
 
-api.post('/routes/new', apiSecured, apiSecured, api_controller.newRoute)
+api.post('/routes/new', apiSecured, api_controller.newRoute)
 
-api.delete('/routes/:id', apiSecured, apiSecured, api_controller.removeRoute)
+api.delete('/routes/:id', apiSecured, api_controller.removeRoute)
 
 module.exports = api
