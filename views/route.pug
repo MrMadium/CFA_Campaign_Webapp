@@ -1,0 +1,36 @@
+extends layout
+
+block layout-content
+  div.container-fluid
+    div.row.window-full.text-center
+      h2.h-10 Route Id: #{routeName}
+      div#map.h-80
+      div.geotracking-btn.h-10.p-1
+        button.btn.btn-primary.w-50.h-100 Begin Broadcasting
+
+
+  script(type="text/javascript").
+    let map;
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: -34.397, lng: 150.644 },
+            zoom: 8,
+        });
+    }
+
+    var elements = document.getElementsByClassName('window-full');
+    var windowheight = window.innerHeight - 161 + "px";
+
+    fullheight(elements);
+    function fullheight(elements) {
+        for(let el in elements){
+            if(elements.hasOwnProperty(el)){
+                elements[el].style.height = windowheight;
+            }
+        }
+    }
+
+    window.onresize = function(event){
+        fullheight(elements);
+    }
+  script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-mt-i_pr6GyalJImniP1JZuZEIDbikzk&callback=initMap")

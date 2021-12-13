@@ -1,0 +1,86 @@
+extends ../ayout
+
+block layout-content
+  div.container
+    div#route-list.list-group.p-5
+      .header.bg-secondary.py-3.rounded.text-white.text-center
+        h2 Campaigns
+        for brigade in user.brigade.name
+          h5
+            i= brigade.brigadeName
+
+      if user.brigade
+        .account-table
+          table#accounts.table.table-striped.table-bordered
+            thead.thead-dark
+              tr
+                th(scope='col') #
+                th(scope='col') Username
+                th(scope='col') Hash
+                th(scope='col') Permission
+            tbody
+              for account in user.brigade.accounts
+                tr
+                  th(scope="row")= account.userID
+                  td= account.userName
+                  td= account.hash
+                  td= account.permissionLevel
+      else
+        p.text-center You have not been assigned a brigade.
+
+block scripts 
+  script(src="/table-editor.js")
+
+  script.
+    TableEditor.init({
+      tableName: '#accounts',
+      onAdd: (columns) => {
+         $.ajax({
+                url: '/accounts/new',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                  username: columns[0],
+                  password: columns[1],
+                  permission: columns[2]
+                },
+                success: function( data, textStatus, jQxhr ){
+                    TableEditor.table.find('tr:last').find('th').html(data.id)
+                },
+                error: function( jqXhr, textStatus, errorThrown ){
+                    console.log( errorThrown );
+                }
+          });
+      },
+      onEdit: (user, data) => {
+        $.ajax({
+                url: '/accounts/edit/' + user,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                  username: data[0],
+                  password: data[1],
+                  permission: data[2]
+                },
+                success: function( data, textStatus, jQxhr ){
+                    console.log(data)
+                },
+                error: function( jqXhr, textStatus, errorThrown ){
+                    console.log( errorThrown );
+                }
+          });
+      },
+      onDelete: (user) => {
+        $.ajax({
+                url: '/accounts/remove/' + user,
+                type: 'post',
+                dataType: 'json',
+                success: function( data, textStatus, jQxhr ){
+                    TableEditor.table.find('tr:last').find('th').html(data.id)
+                },
+                error: function( jqXhr, textStatus, errorThrown ){
+                    console.log( errorThrown );
+                }
+          });
+      }
+    })

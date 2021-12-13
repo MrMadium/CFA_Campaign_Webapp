@@ -1,0 +1,41 @@
+extends ../layout
+
+block layout-content
+  div.container
+    div#route-list.list-group.p-5
+      .header.bg-secondary.py-3.rounded.text-white.text-center
+        h2 Campaigns
+        for brigade in user.brigade.name
+          h5
+            i= brigade.brigadeName
+
+      if user.brigade
+        .account-table
+          table#accounts.table.table-striped.table-bordered
+            thead.thead-dark
+              tr
+                th(scope='col') #
+                th(scope='col') Username
+                th(scope='col') Hash
+                th(scope='col') Permission
+            tbody
+              
+      else
+        p.text-center You have not been assigned a brigade.
+
+block scripts 
+  script(src="/table-editor.js")
+
+  script.
+    TableEditor.init({
+      tableName: '#accounts',
+      onAdd: (columns) => {
+         
+      },
+      onEdit: (user, data) => {
+        
+      },
+      onDelete: (user) => {
+        
+      }
+    })

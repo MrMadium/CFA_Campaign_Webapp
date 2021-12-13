@@ -1,0 +1,26 @@
+extends ../layout
+
+block layout-content
+  div.container
+    div#route-list.list-group.p-5
+      .header.bg-secondary.py-3.rounded.text-white.text-center
+        h2 Routes
+          h5
+            i subcategory
+
+block scripts 
+  script(src="/table-editor.js")
+
+  script.
+    TableEditor.init({
+      tableName: '#accounts',
+      onAdd: (columns) => {
+         
+      },
+      onEdit: (user, data) => {
+        
+      },
+      onDelete: (user) => {
+        
+      }
+    })

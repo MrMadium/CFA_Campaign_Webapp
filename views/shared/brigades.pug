@@ -1,0 +1,89 @@
+extends ../layout
+
+block layout-content
+  div.container
+
+    if user.role === 'Supervisor'
+      .header.bg-secondary.py-3.rounded.text-white.text-center.my-5
+        h2 Brigades
+        for obj in user.brigade.objects
+          h5
+            i= obj.brigadeName
+
+      if user.brigade
+        .account-table
+          table#brigades.table.table-striped.table-bordered
+            thead.thead-dark
+              tr
+                th(scope='col') #
+                th(scope='col') Title
+                th(scope='col') Address
+                th(scope='col') GeoLocation
+            tbody
+              for obj in user.brigade.objects
+                tr
+                  th(scope="row")= obj.brigadeID
+                  td= obj.brigadeName
+                  td= obj.brigadeAddress
+                  td= obj.brigadeLocation
+      else
+        p.text-center There are no brigades.
+
+
+    if user.role === 'Admin'
+      .header.bg-secondary.py-3.rounded.text-white.text-center.my-5
+        h2 Brigades
+          h5
+            i All
+
+      if user.brigade
+        .account-table
+          table#accounts.table.table-striped.table-bordered
+            thead.thead-dark
+              tr
+                th(scope='col') #
+                th(scope='col') Username
+                th(scope='col') Hash
+                th(scope='col') Permission
+            tbody
+              for account in user.brigade.accounts
+                tr
+                  th(scope="row")= account.userID
+                  td= account.userName
+                  td= account.hash
+                  td= account.permissionLevel
+      else
+        p.text-center There are no brigades.
+
+block scripts 
+
+  if user.role === 'Supervisor'
+    script(src="/table-editor.js")
+    script.
+      TableEditor.init({
+        tableName: '#brigades',
+        deleteRow: true,
+        onAdd: (columns) => {
+          
+        },
+        onEdit: (user, data) => {
+          
+        },
+        onDelete: (user) => {
+          
+        }
+      })
+
+  if user.role === 'Admin'
+    script(src="/table-editor.js")
+    script.
+      TableEditor.init({
+        tableName: '#accounts',
+        deleteRow: true,
+        onEdit: (user, data) => {
+          
+        },
+        onDelete: (user) => {
+          
+        }
+      })
