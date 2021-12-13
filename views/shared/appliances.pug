@@ -1,0 +1,31 @@
+extends ../layout
+
+block layout-content
+  div.container
+    div#route-list.list-group.p-5
+      .header.bg-secondary.py-3.rounded.text-white.text-center
+        h2 Appliances
+        for brigade in user.brigade.name
+          h5
+            i= brigade.brigadeName
+
+      
+      else
+        p.text-center You have not been assigned a brigade.
+
+block scripts 
+  script(src="/table-editor.js")
+
+  script.
+    TableEditor.init({
+      tableName: '#accounts',
+      onAdd: (columns) => {
+         
+      },
+      onEdit: (user, data) => {
+        
+      },
+      onDelete: (user) => {
+        
+      }
+    })

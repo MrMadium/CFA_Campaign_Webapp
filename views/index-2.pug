@@ -1,0 +1,11 @@
+extends layout
+
+block layout-content
+  div.container
+    div#route-list.list-group.p-5
+      h2.text-center Campaigns
+      if campaigns.length
+        each campaign in campaigns
+          a.list-group-item.shadow.rounded.mb-4(href=`/${appliance}/${campaign.campaignID}`)= campaign.campaignName
+      else 
+        p.text-center There are no campaigns available for this appliance.

@@ -1,0 +1,29 @@
+{
+  "development": {
+    "username": "root",
+    "password": "root123#",
+    "database": "cfa_development",
+    "host": "localhost",
+    "dialect": "mysql",
+    "define": {
+      "timestamps": false
+    }
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "database_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "root123#",
+    "database": "cfa",
+    "host": "127.0.0.1",
+    "dialect": "mysql",
+    "define": {
+      "timestamps": false
+    }
+  }
+}
