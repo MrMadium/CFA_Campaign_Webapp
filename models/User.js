@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
             unique: true
         },
         hash: {
-            type: DataTypes.BINARY(60),
+            type: DataTypes.STRING(200),
             allowNull: false
         },
         permissionLevel: {
