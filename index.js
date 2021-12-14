@@ -36,6 +36,7 @@ app.use(
     })
 )
 app.use(cookieParser())
+require('trace-unhandled/register')
 
 let routeList = io
     .of('/index')
@@ -57,4 +58,6 @@ db.sequelize.sync().then(() => {
     http.listen(port, () => {
         console.log(`App listening at http://localhost:${port}`);
     })
+}).catch(err => {
+    console.error(err); // Catch error if related to Sequelize.
 })
