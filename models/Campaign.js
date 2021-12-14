@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         campaignNotes: {
-            type: DataTypes.STRING(1) + ' CHARSET utf8mb4 COLLATE utf8mb4_0900_ai_ci',
+            type: DataTypes.STRING + ' CHARSET utf8mb4 COLLATE utf8mb4_0900_ai_ci',
             allowNull: true
         },
         campaignStatus: {
