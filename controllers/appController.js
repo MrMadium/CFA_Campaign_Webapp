@@ -1,8 +1,9 @@
-const fs = require('fs')
 const request = require('request')
 const util = require('../util/helpers')
-const { response } = require('express')
 
+/**
+ * Controller for index.
+ */
 exports.index = (req, res) => {
     const user = util.verifyToken(req.cookies.token)
 
