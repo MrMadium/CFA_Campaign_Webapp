@@ -33,13 +33,13 @@ api.delete('/users/:id', apiSecured, api_controller.removeUser)
 /**
  * Role Route Handler
  */
-api.get('/roles', apiSecured, api_controller.getRoles)
+api.get('/roles/all', apiSecured, api_controller.getRoles)
 
 api.get('/roles/:id', apiSecured, api_controller.getRole)
 
-api.put('/roles/:id', apiSecured, api_controller.updateRole)
-
 api.post('/roles/new', apiSecured, api_controller.newRole)
+
+api.post('/roles/:id', apiSecured, api_controller.updateRole)
 
 api.delete('/roles/:id', apiSecured, api_controller.removeRole)
 
@@ -63,21 +63,21 @@ api.delete('/appliances/:id', apiSecured, api_controller.removeAppliance)
 /**
  * ApplianceClass Route Handler
  */
-api.get('/applianceClasses', apiSecured, api_controller.getApplianceClasses)
+api.get('/applianceclasses', apiSecured, api_controller.getApplianceClasses)
 
-api.get('/applianceClasses/:id', apiSecured, api_controller.getApplianceClass)
+api.get('/applianceclasses/:id', apiSecured, api_controller.getApplianceClass)
 
-api.put('/applianceClasses/:id', apiSecured, api_controller.updateApplianceClass)
+api.put('/applianceclasses/:id', apiSecured, api_controller.updateApplianceClass)
 
-api.post('/applianceClasses/new', apiSecured, api_controller.newApplianceClass)
+api.post('/applianceclasses/new', apiSecured, api_controller.newApplianceClass)
 
-api.delete('/applianceClasses/:id', apiSecured, api_controller.removeApplianceClass)
+api.delete('/applianceclasses/:id', apiSecured, api_controller.removeApplianceClass)
 
 
 /**
  * Brigade Route Handler
  */
-api.get('/brigades', apiSecured, api_controller.getBrigades)
+api.get('/brigades/all', apiSecured, api_controller.getBrigades)
 
 api.post('/brigades/new', apiSecured, api_controller.newBrigade)
 
@@ -97,9 +97,9 @@ api.get('/campaigns/brigade/:id', apiSecured, api_controller.getCampaignsByBriga
 
 api.get('/campaigns/:id', apiSecured, api_controller.getCampaign)
 
-api.put('/campaigns/:id', apiSecured, api_controller.updateCampaign)
-
 api.post('/campaigns/new', apiSecured, api_controller.newCampaign)
+
+api.post('/campaigns/:id', apiSecured, api_controller.updateCampaign)
 
 api.delete('/campaigns/:id', apiSecured, api_controller.removeCampaign)
 
@@ -113,9 +113,9 @@ api.get('/routes/campaign/:campaignId', apiSecured, api_controller.getRoutesByCa
 
 api.get('/routes/:id', apiSecured, api_controller.getRoute)
 
-api.put('/routes/:id', apiSecured, api_controller.updateRoute)
-
 api.post('/routes/new', apiSecured, api_controller.newRoute)
+
+api.post('/routes/:id', apiSecured, api_controller.updateRoute)
 
 api.delete('/routes/:id', apiSecured, api_controller.removeRoute)
 

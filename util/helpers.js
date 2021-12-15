@@ -1,7 +1,16 @@
 const jwt = require('jsonwebtoken')
+const config = require("../config/config.json")
+const env = process.env.NODE_ENV || 'development';
 
 exports.generateAccessToken = (user) => {
-    return jwt.sign(user, 'OURAPPSECRET', { expiresIn: '7d' })
+    const payload = { 
+        id: user.userID, 
+        user: user.userName, 
+        brigades: user.Brigades, 
+        role: user.permissionName 
+    }
+
+    return jwt.sign(payload, config[env].secret, { expiresIn: config[env].jwtExpiry })
 }
 
 exports.verifyToken = (token) => {
@@ -9,7 +18,7 @@ exports.verifyToken = (token) => {
 }
 
 exports.stringToArray = (valueString) => {
-    return valueString.substr(0, valueString.length - 1).substr(1).split(',');
+    return valueString.match( /(?=\S)[^,]+?(?=\s*(,|$))/g )
 }
 
 exports.parameterIsArray = (parameter) => {

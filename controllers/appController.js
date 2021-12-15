@@ -22,12 +22,12 @@ exports.index = (req, res) => {
         user.brigades.forEach(brigade => {
             brigArray.push(brigade.brigadeID)
         })
-        brigArray = `"${brigArray}"`
+        brigArray = `${brigArray}`
     } else {
         brigArray = user.brigades.brigadeID
     }
     
-    request.get(`http://localhost:8000/api/appliances/brigade/[${brigArray}]`, {
+    request.get(`http://localhost:8000/api/appliances/brigade/${brigArray}`, {
         'auth': {
             'bearer': req.cookies.token
         }
@@ -110,7 +110,7 @@ exports.doLogin = (req, res) => {
     const { username, password } = req.body
 
     request.post({
-        url: 'http://localhost:8000/api/login',
+        url: 'http://localhost:8000/api/auth/login',
         form: {
             username: username,
             password: password
@@ -118,7 +118,7 @@ exports.doLogin = (req, res) => {
     }, (error, response, body) => {
         const info = JSON.parse(body);
         if (response.statusCode == 200) {
-            res.cookie('token', info.token, {
+            res.cookie('token', info.access_token, {
                 expires: new Date(Date.now() + 604800000),
                 secure: false,
                 httpOnly: true
