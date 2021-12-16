@@ -29,7 +29,7 @@ exports.authUser = async (req, res) => {
         const { username, password } = req.body
         
         const user = await User.findOne({
-            where: { username: username, hash: password },
+            where: { username: username, hash: null },
             include: [Brigade,Permission]
         })
 
