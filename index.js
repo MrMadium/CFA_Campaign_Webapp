@@ -52,5 +52,5 @@ db.sequelize.sync().then(() => {
         console.log(`App listening at http://localhost:${port}`);
     })
 }).catch(err => {
-    console.error(err); // Catch error if related to Sequelize.
+    console.log("Database Connection Failed: " + err); // Catch error if related to Sequelize.
 })
