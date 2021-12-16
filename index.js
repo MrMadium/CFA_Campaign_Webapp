@@ -8,7 +8,7 @@ const apiRoutes = require("./routes/apiRoutes")
 const ioListener = require('./controllers/appSocket')
 const cors = require('cors')
 const cookieParse = require('cookie-parser')
-require('@google-cloud/debug-agent').start({ serviceContext: { enableCanary: true } })
+require('@google-cloud/debug-agent').start({ serviceContext: { enableCanary: true } });
 
 /**
  * App Variables
