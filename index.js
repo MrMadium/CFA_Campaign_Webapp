@@ -6,11 +6,6 @@ const path = require("path");
 const appRoutes = require("./routes/appRoutes")
 const apiRoutes = require("./routes/apiRoutes")
 const cors = require('cors')
-<<<<<<< HEAD
-=======
-const cookieParse = require('cookie-parser')
-require('@google-cloud/debug-agent').start({ serviceContext: { enableCanary: true } });
->>>>>>> d6316ab5f07f8ac1fc3bd8fc9786bcba8ab7a3b0
 
 /**
  * App Variables
@@ -22,6 +17,7 @@ const port = process.env.PORT || "8000";
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 require('./controllers/appSocket')(io)
+require('@google-cloud/debug-agent').start({ serviceContext: { enableCanary: true } });
 
 /**
  *  App Configuration
