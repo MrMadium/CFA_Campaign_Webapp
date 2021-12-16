@@ -4,12 +4,12 @@ block layout-content
   div.container
     div#route-list.list-group.p-5
         
-      if user.role == 'Supervisor'
+      if user.role == 'ROLE_SUPERVISOR'
         .header.bg-secondary.py-3.rounded.text-white.text-center
           h2 Accounts
           h5 
             each b in user.brigade
-              =b.brigadeName
+              i=b.name
 
         if user.brigade
           .account-table
@@ -18,21 +18,21 @@ block layout-content
                 tr
                   th(scope='col') #
                   th(scope='col') User Name
-                  th(scope='col') Hash
+                  th(scope='col') member ID
                   th(scope='col') Permission ID
               tbody
                 each a in user.accounts
                   tr
-                    th(scope="row")= a.userID
-                    td= a.userName
-                    td= a.hash
-                    td= a.Permission.permissionID
+                    th(scope="row")= a.id
+                    td= a.username
+                    td= a.memberID
+                    td= a.Permission
                         
         else
           p.text-center.p-4 There are no accounts to display.
           
 
-      if user.role == 'Admin'
+      if user.role == 'ROLE_ADMIN'
         .header.bg-secondary.py-3.rounded.text-white.text-center
           h2 Accounts
           H5 All Accounts
@@ -44,16 +44,16 @@ block layout-content
                 tr
                   th(scope='col') #
                   th(scope='col') User Name
-                  th(scope='col') Hash
+                  th(scope='col') memberID
                   th(scope='col') Permission ID
                   th(scope='col') Brigade
               tbody
                 each account in user.accounts
                   tr
-                    th(scope="row")= account.userID
-                    td= account.userName
-                    td= account.hash
-                    td= account.Permission.permissionID
+                    th(scope="row")= account.id
+                    td= account.username
+                    td= account.memberID
+                    td= account.Permission
                     td(tetype='pills')
                       each brigade, index in account.Brigades
                         if index == account.Brigades.length - 1

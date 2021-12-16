@@ -5,9 +5,7 @@ const express = require("express");
 const path = require("path");
 const appRoutes = require("./routes/appRoutes")
 const apiRoutes = require("./routes/apiRoutes")
-const ioListener = require('./controllers/appSocket')
 const cors = require('cors')
-const cookieParse = require('cookie-parser')
 
 /**
  * App Variables
@@ -18,6 +16,7 @@ const cookieParser = require("cookie-parser");
 const port = process.env.PORT || "8000";
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
+require('./controllers/appSocket')(io)
 
 /**
  *  App Configuration
@@ -30,19 +29,12 @@ app.use(express.urlencoded({extended: true}))
 app.use(
     cors({
         origin: [
-            'http:localhost:8000'
+            'http://localhost:8000'
         ],
         credidentials: true
     })
 )
 app.use(cookieParser())
-require('trace-unhandled/register')
-
-let routeList = io
-    .of('/index')
-    .on('connection', (socket) => {
-        ioListener.respond(routeList, socket)
-    })
 
 /**
  * Routes Definitions

@@ -1,39 +1,76 @@
-const request = require('request')
-const util = require('../util/helpers')
+const fetch = require('node-fetch')
+const env = process.env.NODE_ENV || 'development'
+const config = require('../config/config.json')
+const { objArrayToArray } = require("../util/helpers")
+
+/**
+ * Controllers for authentication
+ */
+exports.getLogin = (req, res) => {
+    res.render('login')
+}
+
+exports.doLogin = async (req, res) => {
+    try {
+        const { username, password } = req.body
+
+        const user = await fetch('http://localhost:8000/api/auth/login', {
+            method: 'post',
+            body: `username=${username}&password=${password}`,
+            headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        })
+        const data = await user.json()
+
+        if (!user.ok) return res.render("login", { loginMsg: data.message })
+
+        res.cookie('token', data.access_token, {
+            expires: new Date(Date.now() + config[env].jwtExpiry),
+            secure: false,
+            httpOnly: true
+        })
+        res.redirect('/')
+        
+    } catch (e) {
+        console.error(e.stack)
+    }
+    
+}
+
+exports.doLogout = async (req, res) => {
+    try {
+        res.cookie('token', null, {
+            expires: new Date(Date.now()),
+            secure: false,
+            httpOnly: true
+        })
+        res.redirect('/login')
+    } catch (e) {
+        console.log(e.stack)
+    }
+}
 
 /**
  * Controller for index.
  */
-exports.index = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
-
-    if (user.role === 'Admin') {
-        res.render('admin/dashboard', {
-            user: {
-                id: user.id,
-                username: user.user,
-                role: user.role
-            }
-        })
-    } 
-
-    let brigArray
-    if (Array.isArray(user.brigades)) {
-        brigArray = []
-        user.brigades.forEach(brigade => {
-            brigArray.push(brigade.brigadeID)
-        })
-        brigArray = `${brigArray}`
-    } else {
-        brigArray = user.brigades.brigadeID
-    }
-    
-    request.get(`http://localhost:8000/api/appliances/brigade/${brigArray}`, {
-        'auth': {
-            'bearer': req.cookies.token
+exports.index = async (req, res) => {
+    try {
+        const user = req.user
+        if (user.role === 'ROLE_ADMIN') {
+            res.render('admin/dashboard', {
+                user: {
+                    id: user.id,
+                    username: user.user,
+                    role: user.role
+                }
+            })
         }
-    }, (error, response, body) => {
-        const obj = JSON.parse(body);
+
+        const brigArray = objArrayToArray(user.brigades, "brigadeID")
+
+        const a = await fetch(`http://localhost:8000/api/appliances/brigade/${brigArray}`, {
+            headers: { "Authorization": `Bearer ${req.cookies.token}`}
+        })
+        const data = await a.json()
 
         res.render('index', { 
             user: {
@@ -41,20 +78,28 @@ exports.index = (req, res) => {
                 username: user.user,
                 role: user.role
             },
-            appliances: obj
+            appliances: data
         })
-    })
+    }
+    catch (e) {
+        console.error(e.stack)
+    }
+    
 }
 
-exports.getApplianceCampaigns = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+/**
+ * Controller for /:appliance
+ */
+exports.getApplianceCampaigns = async (req, res) => {
+    try {
+        const user = req.user
 
-    request.get(`http://localhost:8000/api/appliances/${req.params.appliance}`, {
-        'auth': {
-            'bearer': req.cookies.token
-        }
-    }, (error, response, body) => {
-        const info = JSON.parse(body);
+        const brigArray = objArrayToArray(user.brigades, "brigadeID")
+
+        const c = await fetch(`http://localhost:8000/api/campaigns/brigade/${brigArray}`, {
+                headers: { "Authorization": `Bearer ${req.cookies.token}`}
+        })
+        const data = await c.json()
 
         res.render('index-2', { 
             user: {
@@ -63,20 +108,24 @@ exports.getApplianceCampaigns = (req, res) => {
                 role: user.role
             },
             appliance: req.params.appliance,
-            campaigns: info.Campaigns
+            campaigns: data
         })
-    })
+    } catch (e) {
+        console.error(e.stack)
+    }
 }
 
-exports.getCampaignRoutes = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+/**
+ * Controller for /:appliance/:campaign/
+ */
+exports.getCampaignRoutes = async (req, res) => {
+    try {
+        const user = req.user
 
-    request.get(`http://localhost:8000/api/routes/campaign/${req.params.campaign}`, {
-        'auth': {
-            'bearer': req.cookies.token
-        }
-    }, (error, response, body) => {
-        const info = JSON.parse(body);
+        const r = await fetch(`http://localhost:8000/api/routes/campaign/${req.params.campaign}`, {
+                headers: { "Authorization": `Bearer ${req.cookies.token}`}
+        })
+        const data = await r.json()
 
         res.render('index-3', { 
             user: {
@@ -86,127 +135,110 @@ exports.getCampaignRoutes = (req, res) => {
             },
             appliance: req.params.appliance,
             campaign: req.params.campaign,
-            routes: info
+            routes: data
         })
-    })
+    } catch (e) {
+        console.error(e)
+    }
 }
 
-exports.getRoute = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+/**
+ * Controller for /:appliance/:campaign/:route
+ */
+exports.getRoute = async (req, res) => {
+    try {
+        const user = req.user
 
-    res.render('route', { 
-        user: {
-            id: user.id,
-            username: user.user,
-            role: user.role
-        }
-    })
+        const r = await fetch(`http://localhost:8000/api/routes/${req.params.route}`, {
+                headers: { "Authorization": `Bearer ${req.cookies.token}`}
+        })
+        const data = await r.json()
+
+        res.render('route', { 
+            user: {
+                id: user.id,
+                username: user.user,
+                role: user.role
+            },
+            appliance: req.params.appliance,
+            campaign: req.params.campaign,
+            route: data
+        })
+    } catch (e) {
+        console.error(e)
+    }
 }
 
-exports.getLogin = (req, res) => {
-    res.render('login')
-}
-
-exports.doLogin = (req, res) => {
-    const { username, password } = req.body
-
-    request.post({
-        url: 'http://localhost:8000/api/auth/login',
-        form: {
-            username: username,
-            password: password
-        }
-    }, (error, response, body) => {
-        const info = JSON.parse(body);
-        if (response.statusCode == 200) {
-            res.cookie('token', info.access_token, {
-                expires: new Date(Date.now() + 604800000),
-                secure: false,
-                httpOnly: true
-            })
-            res.redirect('/')
-        } else {
-            res.render('login', { loginMsg: JSON.parse(body) })
-        }
-    })
-}
-
-exports.doLogout = (req, res) => {
-    res.cookie('token', null, {
-        expires: new Date(Date.now()),
-        secure: false,
-        httpOnly: true
-    })
-    res.redirect('/login')
-}
-
+/**
+ * Controller for /dashboard
+ */
 exports.getDashboard = (req, res) => {
-    const token = util.verifyToken(req.cookies.token)
+    try {
+        const user = req.user
     
-    if (token.role === 'Admin') {
-        res.render('dashboard', {user: {
-            id: user.id,
-            username: user.user,
-            role: user.role
-        }})
-    } else {
-        res.status(401).send('Unauthorised')
+        if (token.role === 'ROLE_ADMIN') {
+            res.render('dashboard', {user: {
+                id: user.id,
+                username: user.user,
+                role: user.role
+            }})
+        } else {
+            res.status(401).send('Unauthorised')
+        }
+    } catch (e) {
+        console.error(e.stack)
     }
 }
 
-exports.getAccounts = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+/**
+ * Controllers for /accounts
+ */
+exports.getAccounts = async (req, res) => {
+    try {
+        const user = req.user
 
-    let brigades = []
-    user.brigades.forEach(brigade => {
-        brigades.push(brigade.brigadeID)
-    });
+        if (user.role == 'ROLE_USER') return res.status(404).send("401 Unauthorized")
 
-    if (user.role == 'Supervisor') {
-        request.get({
-            url: `http://localhost:8000/api/brigades/${brigades}`,
-            'auth': {
-                'bearer': req.cookies.token
-            }
-        }, (error, response, body) => {
-            const info = JSON.parse(body);
+        if (user.role == 'ROLE_SUPERVISOR') {
+            const brigades = objArrayToArray(user.brigades, "brigadeID")
 
-            let users = []
-            info.forEach(b => {
-                b.Users.forEach(u => {
-                    users.push(u)
-                })
+            const r = await fetch(`http://localhost:8000/api/users/brigade/${brigades}`, {
+                    headers: { "Authorization": `Bearer ${req.cookies.token}`}
             })
+            const data = await r.json()
 
             res.render('shared/accounts', { user: {
                 id: user.id,
                 username: user.user,
                 role: user.role,
-                brigade: info,
-                accounts: users
+                brigade: data,
+                accounts: data
             }})
-        })
-    }
+        }
 
-    if (user.role == 'Admin') {
-        request.get({
-            url: `http://localhost:8000/api/users`,
-            'auth': {
-                'bearer': req.cookies.token
-            }
-        }, (error, response, body) => {
-            const info = JSON.parse(body);
+        if (user.role == 'ROLE_ADMIN') {
+            const r = await fetch('http://localhost:8000/api/users/all', {
+                    headers: { "Authorization": `Bearer ${req.cookies.token}`}
+            })
+            const data = await r.json()
+
+            console.log(data);
 
             res.render('shared/accounts', { user: {
                 id: user.id,
                 username: user.user,
                 role: user.role,
-                accounts: info
+                accounts: data
             }})
-        })
+        }
+    } catch (e) {
+        console.error(e)
     }
 }
 
+/**
+ * Controller to post to /api/users
+ */
 exports.createUser = (req, res) => {
     const { username, password, permission } = req.body
     const user = util.verifyToken(req.cookies.token)
@@ -237,6 +269,9 @@ exports.createUser = (req, res) => {
     
 }
 
+/**
+ * Controller to delete to /api/users
+ */
 exports.removeUser = (req, res) => {
     const { username, password, permission } = req.body
 
@@ -253,6 +288,9 @@ exports.removeUser = (req, res) => {
     
 }
 
+/**
+ * Controller to update to /api/users
+ */
 exports.editUser = (req, res) => {
     const { username, password, permission } = req.body
     const user = util.verifyToken(req.cookies.token)
@@ -282,10 +320,13 @@ exports.editUser = (req, res) => {
     })
 }
 
+/**
+ * Controller for /brigades
+ */
 exports.getBrigades = (req, res) => {
     const user = util.verifyToken(req.cookies.token)
 
-    if (user.role === 'Supervisor') {
+    if (user.role === 'ROLE_SUPERVISOR') {
 
         let brigades = []
         user.brigades.forEach(brigade => {
@@ -312,7 +353,7 @@ exports.getBrigades = (req, res) => {
         })
     }
 
-    if (user.role === 'Admin') {
+    if (user.role === 'ROLE_ADMIN') {
         res.render('shared/brigades', { user: {
             id: user.id,
             username: user.user,

@@ -6,6 +6,6 @@ block layout-content
       h2.text-center Appliances
       if appliances.length
         each appliance in appliances
-          a.list-group-item.shadow.rounded.mb-4(href=`${appliance.applianceID}`)= appliance.publicName
+          a.list-group-item.shadow.rounded.mb-4(href=`${appliance.id}`)= appliance.name
       else 
         p.text-center There are no appliances for your Brigade.

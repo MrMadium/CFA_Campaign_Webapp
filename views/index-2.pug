@@ -6,6 +6,6 @@ block layout-content
       h2.text-center Campaigns
       if campaigns.length
         each campaign in campaigns
-          a.list-group-item.shadow.rounded.mb-4(href=`/${appliance}/${campaign.campaignID}`)= campaign.campaignName
+          a.list-group-item.shadow.rounded.mb-4(href=`/${appliance}/${campaign.id}`)= campaign.name
       else 
         p.text-center There are no campaigns available for this appliance.

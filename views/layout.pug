@@ -24,7 +24,7 @@ html
               li.nav-item.active
                   a.nav-link(href='/login') Login
 
-            else if user.role === 'Supervisor' || user.role === 'Admin'
+            else if user.role === 'ROLE_SUPERVISOR' || user.role === 'ROLE_ADMIN'
               li.nav-item.active
                   a.nav-link(href='/') Home
               li.nav-item

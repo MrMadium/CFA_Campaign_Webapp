@@ -23,6 +23,8 @@ api.get('/users/all', apiSecured, api_controller.getUsers)
 
 api.post('/users/new', apiSecured, api_controller.newUser)
 
+api.get('/users/brigade/:id', apiSecured, api_controller.getUsersByBrigade)
+
 api.get('/users/:id', apiSecured, api_controller.getUser)
 
 api.post('/users/:id', apiSecured, api_controller.updateUser)

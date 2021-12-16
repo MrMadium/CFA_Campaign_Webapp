@@ -13,7 +13,6 @@ const {
     Campaign,
     Route,
     sequelize } = require("../models")
-const { Op } = require('sequelize')
 
 /**
  * Controller for /api/
@@ -44,7 +43,12 @@ exports.authUser = async (req, res) => {
             return res.status(404).send({ message: "User has no permissions." })
         }
 
-        const token = generateAccessToken(user)
+        const token = generateAccessToken({
+            id: user.userID, 
+            user: user.userName,
+            brigades: user.Brigades, 
+            role: `ROLE_${user.Permission.permissionName.toUpperCase()}`
+        })
 
         res.status(200).send({
             username: user.userName,
@@ -78,6 +82,33 @@ exports.getUsers = async (req, res) => {
             username: u.userName,
             memberID: u.memberID,
             Permission: `ROLE_${u.Permission.permissionName.toUpperCase()}`,
+            Brigades: u.Brigades.map(b => { return {brigadeID: b.brigadeID, brigadeName: b.brigadeName}})
+        } }))
+    } catch (e) {
+        console.error(e.stack);
+    }
+}
+
+exports.getUsersByBrigade = async (req, res) => {
+    try {
+        const users = await User.findAll({
+            include: [{
+                model: Brigade,
+                where: {
+                    brigadeID: [13781]
+                }
+            }, Permission]
+        })
+
+        if (!users) {
+            return res.status(404).send({ message: "No users." })
+        }
+
+        res.status(200).send(users.map(u => { return {
+            id: u.userID,
+            username: u.userName,
+            memberID: u.memberID,
+            Permission: u.Permission.permissionName,
             Brigades: u.Brigades.map(b => { return {brigadeID: b.brigadeID, brigadeName: b.brigadeName}})
         } }))
     } catch (e) {
@@ -704,22 +735,29 @@ exports.getBrigades = async (req, res) => {
 
 exports.getBrigade = async (req, res) => {
     try {
-        const brigade = await Brigade.findOne({
+        const brigade = await Brigade.findAll({
             where: {
-                brigadeID: req.params.id
-            }
+                brigadeID: stringToArray(req.params.id)
+            },
+            include: [{
+                model: User,
+                include: [Permission]
+            }]
         })
 
         if (!brigade) {
             return res.status(404).send({ message: 'Brigade not found.' })
         }
 
-        res.status(200).send({
-            id: brigade.brigadeID,
-            name: brigade.brigadeName,
-            address: brigade.brigadeAddress,
-            geoLocation: brigade.brigadeLocation
-        })
+        res.status(200).send(brigade.map(b => {
+            return {
+                id: b.brigadeID,
+                name: b.brigadeName,
+                address: b.brigadeAddress,
+                geoLocation: b.brigadeLocation,
+                Users: b.Users
+            }
+        }))
     } catch (e) {
         console.error(e.stack)
     }
