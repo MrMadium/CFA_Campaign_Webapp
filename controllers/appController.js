@@ -1,7 +1,8 @@
 const fetch = require('node-fetch')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../config/config.json')
-const { objArrayToArray } = require("../util/helpers")
+const { objArrayToArray,
+        verifyToken } = require("../util/helpers")
 
 /**
  * Controllers for authentication
@@ -56,7 +57,7 @@ exports.index = async (req, res) => {
     try {
         const user = req.user
         if (user.role === 'ROLE_ADMIN') {
-            res.render('admin/dashboard', {
+            return res.render('admin/dashboard', {
                 user: {
                     id: user.id,
                     username: user.user,
@@ -177,14 +178,14 @@ exports.getDashboard = (req, res) => {
         const user = req.user
     
         if (token.role === 'ROLE_ADMIN') {
-            res.render('dashboard', {user: {
+            return res.render('dashboard', {user: {
                 id: user.id,
                 username: user.user,
                 role: user.role
             }})
-        } else {
-            res.status(401).send('Unauthorised')
         }
+        
+        res.status(401).send('Unauthorised')
     } catch (e) {
         console.error(e.stack)
     }
@@ -207,7 +208,7 @@ exports.getAccounts = async (req, res) => {
             })
             const data = await r.json()
 
-            res.render('shared/accounts', { user: {
+            return res.render('shared/accounts', { user: {
                 id: user.id,
                 username: user.user,
                 role: user.role,
@@ -222,9 +223,7 @@ exports.getAccounts = async (req, res) => {
             })
             const data = await r.json()
 
-            console.log(data);
-
-            res.render('shared/accounts', { user: {
+            return res.render('shared/accounts', { user: {
                 id: user.id,
                 username: user.user,
                 role: user.role,
@@ -241,7 +240,7 @@ exports.getAccounts = async (req, res) => {
  */
 exports.createUser = (req, res) => {
     const { username, password, permission } = req.body
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 
     let brigades = []
     user.brigades.forEach(brigade => {
@@ -293,7 +292,7 @@ exports.removeUser = (req, res) => {
  */
 exports.editUser = (req, res) => {
     const { username, password, permission } = req.body
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 
     console.log(req.body);
 
@@ -324,7 +323,7 @@ exports.editUser = (req, res) => {
  * Controller for /brigades
  */
 exports.getBrigades = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 
     if (user.role === 'ROLE_SUPERVISOR') {
 
@@ -341,7 +340,7 @@ exports.getBrigades = (req, res) => {
         }, (error, response, body) => {
             const info = JSON.parse(body);
 
-            res.render('shared/brigades', { user: {
+            return res.render('shared/brigades', { user: {
                 id: user.id,
                 username: user.user,
                 role: user.role,
@@ -354,7 +353,7 @@ exports.getBrigades = (req, res) => {
     }
 
     if (user.role === 'ROLE_ADMIN') {
-        res.render('shared/brigades', { user: {
+        return res.render('shared/brigades', { user: {
             id: user.id,
             username: user.user,
             role: user.role
@@ -363,20 +362,20 @@ exports.getBrigades = (req, res) => {
 }
 
 exports.createBrigade = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 }
 
 exports.removeBrigade = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 }
 
 exports.editBrigade = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 }
 
 
 exports.getCampaigns = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 
     res.render('shared/campaigns', { user: {
         id: user.id,
@@ -389,20 +388,20 @@ exports.getCampaigns = (req, res) => {
 }
 
 exports.createCampaign = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 }
 
 exports.removeCampaign = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 }
 
 exports.editCampaign = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 }
 
 
 exports.getRoutes = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 
     res.render('shared/routes', { user: {
         id: user.id,
@@ -412,13 +411,13 @@ exports.getRoutes = (req, res) => {
 }
 
 exports.createRoute = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 }
 
 exports.removeRoute = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 }
 
 exports.editRoute = (req, res) => {
-    const user = util.verifyToken(req.cookies.token)
+    const user = req.user
 }
