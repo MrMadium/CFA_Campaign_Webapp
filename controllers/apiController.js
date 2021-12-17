@@ -18,7 +18,7 @@ const db = require('../models');
 /**
  * Controller for /api/
  */
-exports.index = (req, res) => {
+exports.index = async (req, res) => {
     res.status(200).json({ message: 'hi!' })
 }
 
@@ -435,27 +435,32 @@ exports.getAppliances = async (req, res) => {
     }
 }
 
-exports.getAppliancesByBrigade = async (req, res) => {
+exports.getCampaignsByStatus = async (req, res) => {
     try {
-        const appliance = await Appliance.findAll({
+        const c = await Campaign.findAll({
             where: {
-                brigadeID: stringToArray(req.params.brigadeId)
+                campaignStatus: [1,2]
             },
-            include: [Brigade, ApplianceClass]
+            include: [Brigade]
         })
 
-        if (!appliance) {
-            return res.status(404).send({ message: 'No appliances found.' })
+        if (!c) {
+            return res.status(404).send({ message: 'Campaigns not found.' })
         }
 
-        res.status(200).send(appliance.map(a => {
+        res.status(200).send(c.map(c => {
             return {
-                id: a.applianceID,
-                name: a.publicName,
-                brigade: a.Brigade.brigadeName,
-                class: a.ApplianceClass.applianceName
+                id: c.campaignID,
+                name: c.campaignName,
+                brigade: c.Brigade.brigadeName,
+                start: c.campaignStart,
+                end: c.campaignEnd,
+                notes: c.campaignNotes,
+                status: c.campaignStatus
             }
         }))
+
+        
     } catch (e) {
         console.error(e.stack)
     }
@@ -926,27 +931,23 @@ exports.getCampaign = async (req, res) => {
     }
 }
 
-exports.getCampaignsByBrigade = async (req, res) => {
+exports.getApplianceByCampaign = async (req, res) => {
     try {
-        const c = await Campaign.findAll({
-            where: {
-                leadBrigade: stringToArray(req.params.id)
-            }
+        const a = await Appliance.findAll({
+            include: [Brigade, {
+                model: Campaign,
+                where: {
+                    campaignID: req.params.id
+                }
+            }],
+        }).catch(err => {
+            console.log(err)
         })
-
-        if (!c) {
-            return res.status(404).send({ message: 'No campaigns found.' })
-        }
-
-        res.status(200).send(c.map(c => {
+    
+        res.send(a.map(a => {
             return {
-                id: c.campaignID,
-                name: c.campaignName,
-                leadBrigade: c.leadBrigade,
-                dateStart: c.campaignStart,
-                dateEnd: c.campaignEnd,
-                notes: c.campaignNotes,
-                status: c.campaignStatus
+                id: a.applianceID,
+                name: a.publicName
             }
         }))
     } catch (e) {

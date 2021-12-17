@@ -51,9 +51,10 @@ api.delete('/roles/:id', apiSecured, api_controller.removeRole)
  */
 api.get('/appliances', apiSecured, api_controller.getAppliances)
 
-api.get('/appliances/brigade/:brigadeId', apiSecured, api_controller.getAppliancesByBrigade)
 
 api.get('/appliances/:id', apiSecured, api_controller.getAppliance)
+
+api.get('/appliances/campaign/:id', apiSecured, api_controller.getApplianceByCampaign)
 
 api.put('/appliances/:id', apiSecured, api_controller.updateAppliance)
 
@@ -95,7 +96,7 @@ api.delete('/brigades/:id', apiSecured, api_controller.removeBrigade)
  */
 api.get('/campaigns', apiSecured, api_controller.getCampaigns)
 
-api.get('/campaigns/brigade/:id', apiSecured, api_controller.getCampaignsByBrigade)
+api.get('/campaigns/status/:status', apiSecured, api_controller.getCampaignsByStatus)
 
 api.get('/campaigns/:id', apiSecured, api_controller.getCampaign)
 

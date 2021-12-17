@@ -3,9 +3,9 @@ extends layout
 block layout-content
   div.container
     div#route-list.list-group.p-5
-      h2.text-center Campaigns
-      if campaigns.length
-        each campaign in campaigns
-          a.list-group-item.shadow.rounded.mb-4(href=`/${appliance}/${campaign.id}`)= campaign.name
+      h2.text-center Appliances
+      if appliances.length
+        each a in appliances
+          a.list-group-item.shadow.rounded.mb-4(href=`/${campaign}/${a.id}`)= a.name
       else 
-        p.text-center There are no campaigns available for this appliance.
+        p.text-center There are no appliances available for this campaign.

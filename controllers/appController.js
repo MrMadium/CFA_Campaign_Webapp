@@ -66,9 +66,7 @@ exports.index = async (req, res) => {
             })
         }
 
-        const brigArray = objArrayToArray(user.brigades, "brigadeID")
-
-        const a = await fetch(`http://localhost:8000/api/appliances/brigade/${brigArray}`, {
+        const a = await fetch(`http://localhost:8000/api/campaigns/status/1,2`, {
             headers: { "Authorization": `Bearer ${req.cookies.token}`}
         })
         const data = await a.json()
@@ -91,25 +89,25 @@ exports.index = async (req, res) => {
 /**
  * Controller for /:appliance
  */
-exports.getApplianceCampaigns = async (req, res) => {
+exports.getCampaignAppliances = async (req, res) => {
     try {
         const user = req.user
 
         const brigArray = objArrayToArray(user.brigades, "brigadeID")
 
-        const c = await fetch(`http://localhost:8000/api/campaigns/brigade/${brigArray}`, {
+        const c = await fetch(`http://localhost:8000/api/appliances/campaign/${req.params.campaign}`, {
                 headers: { "Authorization": `Bearer ${req.cookies.token}`}
         })
         const data = await c.json()
 
-        res.render('index-2', { 
+        res.render('index-2', {
             user: {
                 id: user.id,
                 username: user.user,
                 role: user.role
             },
-            appliance: req.params.appliance,
-            campaigns: data
+            campaign: req.params.campaign,
+            appliances: data
         })
     } catch (e) {
         console.error(e.stack)
@@ -244,8 +242,6 @@ exports.createUser = async (req, res) => {
     try {
         const { username, memberid, password, permission } = req.body
         const user = req.user
-
-        console.log(req.body);
 
         let brigades = []
         user.brigades.forEach(brigade => {

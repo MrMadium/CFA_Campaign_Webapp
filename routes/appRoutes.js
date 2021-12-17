@@ -70,11 +70,11 @@ routes.post('/routes/edit/:id', isAuth, app_controller.editRoute)
 /**
  * Index endpoints with api requesting.
  */
-routes.get('/:appliance([0-9]+)/:campaign([0-9]+)/:route([0-9]+)', isAuth, app_controller.getRoute)
+routes.get('/:campaign([0-9]+)/:appliance([0-9]+)/:route([0-9]+)', isAuth, app_controller.getRoute)
 
-routes.get('/:appliance([0-9]+)/:campaign([0-9]+)', isAuth, app_controller.getCampaignRoutes)
+routes.get('/:campaign([0-9]+)/:appliance([0-9]+)', isAuth, app_controller.getCampaignRoutes)
 
-routes.get('/:appliance([0-9]+)', isAuth, app_controller.getApplianceCampaigns)
+routes.get('/:campaign([0-9]+)', isAuth, app_controller.getCampaignAppliances)
 
 routes.get('*', (req, res) => {
     res.send("404")

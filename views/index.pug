@@ -3,7 +3,7 @@ extends layout
 block layout-content
   div.container
     div#route-list.list-group.p-5
-      h2.text-center Appliances
+      h2.text-center Campaigns
       if appliances.length
         each appliance in appliances
           a.list-group-item.shadow.rounded.mb-4(href=`${appliance.id}`)= appliance.name
