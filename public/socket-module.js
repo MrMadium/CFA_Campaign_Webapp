@@ -1,6 +1,7 @@
 var Socket = {
     init: (io, url) => {
         Socket.io = io(url)
+        Socket.casting = false
 
         Socket._setup()
     },
@@ -14,13 +15,26 @@ var Socket = {
         //Socket.io.on("")
     },
 
+    _toggleButton: () => {
+        $('#broadcast-btn').toggleClass("btn-danger")
+        $('#broadcast-btn').text((i, text) => {
+            return text === "Begin Broadcasting" ? "Stop Broadcast" : "Begin Broadcasting";
+        })
+        Socket._beginBroadcast() 
+    },
+
     _beginBroadcast: () => {
-        Socket.io.emit("activeCast"); // send a appliance id.
+        if (Socket.casting == false) {
+            Socket.casting = true
+        } else { Socket.casting = false }
+        Socket.casting == true ? Socket.io.emit("activeCast") : Socket.io.emit("terminateCast")
+
+        // loop here
     },
 
     _bindClickEvents: () => {
-        $('#broadcast-btn').on("click", () => {
-            Socket._beginBroadcast() 
+        $('button').on("click", () => {
+            Socket._toggleButton()
         })
     }
 };
