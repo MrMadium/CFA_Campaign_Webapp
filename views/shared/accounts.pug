@@ -19,6 +19,7 @@ block layout-content
                   th(scope='col') #
                   th(scope='col') User Name
                   th(scope='col') member ID
+                  th(scope='col') Hash
                   th(scope='col') Permission ID
               tbody
                 each a in user.accounts
@@ -26,6 +27,7 @@ block layout-content
                     th(scope="row")= a.id
                     td= a.username
                     td= a.memberID
+                    td= a.hash
                     td= a.Permission
                         
         else
@@ -45,6 +47,7 @@ block layout-content
                   th(scope='col') #
                   th(scope='col') User Name
                   th(scope='col') memberID
+                  th(scope='col') Hash
                   th(scope='col') Permission ID
                   th(scope='col') Brigade
               tbody
@@ -53,6 +56,7 @@ block layout-content
                     th(scope="row")= account.id
                     td= account.username
                     td= account.memberID
+                    td= account.hash
                     td= account.Permission
                     td(tetype='pills')
                       each brigade, index in account.Brigades
@@ -84,8 +88,9 @@ block scripts
                   dataType: 'json',
                   data: {
                     username: columns[0],
-                    password: columns[1],
-                    permission: columns[2]
+                    memberID: columns[1],
+                    password: columns[2],
+                    permission: columns[3]
                   },
                   success: function( data, textStatus, jQxhr ){
                       TableEditor.table.find('tr:last').find('th').html(data.id)
@@ -102,8 +107,10 @@ block scripts
                   dataType: 'json',
                   data: {
                     username: data[0],
-                    password: data[1],
-                    permission: data[2]
+                    memberID: data[1],
+                    password: data[2],
+                    permission: data[3],
+                    brigades: data[4]
                   },
                   success: function( data, textStatus, jQxhr ){
                       console.log(data)

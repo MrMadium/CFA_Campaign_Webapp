@@ -12,7 +12,8 @@ const {
     ApplianceClass,
     Campaign,
     Route,
-    sequelize } = require("../models")
+    sequelize } = require("../models");
+const db = require('../models');
 
 /**
  * Controller for /api/
@@ -80,6 +81,7 @@ exports.getUsers = async (req, res) => {
         res.status(200).send(users.map(u => { return {
             id: u.userID,
             username: u.userName,
+            hash: u.hash,
             memberID: u.memberID,
             Permission: `ROLE_${u.Permission.permissionName.toUpperCase()}`,
             Brigades: u.Brigades.map(b => { return {brigadeID: b.brigadeID, brigadeName: b.brigadeName}})
@@ -107,6 +109,7 @@ exports.getUsersByBrigade = async (req, res) => {
         res.status(200).send(users.map(u => { return {
             id: u.userID,
             username: u.userName,
+            hash: u.hash,
             memberID: u.memberID,
             Permission: u.Permission.permissionName,
             Brigades: u.Brigades.map(b => { return {brigadeID: b.brigadeID, brigadeName: b.brigadeName}})
@@ -221,7 +224,9 @@ exports.removeUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
     try {
-        const { username, password, permission, brigades } = req.body
+        const { username, memberid, password, permission, brigades } = req.body
+
+        console.log(req.body);
 
         const user = await sequelize.transaction(async (t) => {
 
@@ -235,9 +240,10 @@ exports.updateUser = async (req, res) => {
                 return res.status(404).send({ message: 'User not found.' })
             }
 
-            const userUpdated = await User.update({
+            await User.update({
                 userName: username,
-                hash: password,
+                hash: password == '' ? null : password,
+                memberID: memberid == '' ? null : memberid,
                 permissionLevel: permission
             }, {
                 where: {
@@ -247,7 +253,9 @@ exports.updateUser = async (req, res) => {
         
             await user.setBrigades(stringToArray(brigades), { transaction: t });
         
-            return user;
+            const u = User.findByPk(user.userID)
+
+            return u;
         
         });
 
@@ -257,6 +265,7 @@ exports.updateUser = async (req, res) => {
         res.status(200).send({
             id: user.userID,
             username: user.userName,
+            memberID: user.memberID,
             Permission: `ROLE_${role.permissionName.toUpperCase()}`,
             Brigades: brigade.map(b => { return {brigadeID: b.brigadeID, brigadeName: b.brigadeName}})
         })
@@ -269,7 +278,7 @@ exports.updateUser = async (req, res) => {
             return res.status(404).send({ message: `${e.table} not found.` })
         } 
         else if (e.name == 'SequelizeDatabaseError') {
-            return res.status(404).send({ message: 'Bad Request.' })
+            return res.status(404).send({ message: e })
         } 
         else {
             console.error(e.name)

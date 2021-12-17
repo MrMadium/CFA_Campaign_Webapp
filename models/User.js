@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         hash: {
             type: DataTypes.STRING(200),
-            allowNull: false
+            allowNull: true
         },
         permissionLevel: {
             type: DataTypes.INTEGER(11),

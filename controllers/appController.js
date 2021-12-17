@@ -211,6 +211,7 @@ exports.getAccounts = async (req, res) => {
             return res.render('shared/accounts', { user: {
                 id: user.id,
                 username: user.user,
+                hash: user.hash,
                 role: user.role,
                 brigade: data,
                 accounts: data
@@ -226,6 +227,7 @@ exports.getAccounts = async (req, res) => {
             return res.render('shared/accounts', { user: {
                 id: user.id,
                 username: user.user,
+                hash: user.hash,
                 role: user.role,
                 accounts: data
             }})
@@ -238,34 +240,30 @@ exports.getAccounts = async (req, res) => {
 /**
  * Controller to post to /api/users
  */
-exports.createUser = (req, res) => {
-    const { username, password, permission } = req.body
-    const user = req.user
+exports.createUser = async (req, res) => {
+    try {
+        const { username, memberid, password, permission } = req.body
+        const user = req.user
 
-    let brigades = []
-    user.brigades.forEach(brigade => {
-        brigades.push(brigade.brigadeID)
-    });
+        console.log(req.body);
 
-    console.log(req.body);
+        let brigades = []
+        user.brigades.forEach(brigade => {
+            brigades.push(brigade.brigadeID)
+        });
 
-    request.post({
-        url: `http://localhost:8000/api/users/new`,
-        'auth': {
-            'bearer': req.cookies.token
-        },
-        form: {
-            username: username,
-            password: password,
-            permission: permission,
-            brigade: brigades
-        },
-    }, (error, response, body) => {
-        const info = JSON.parse(body)
-
-        res.status(200).json({ id: info.userID })
-    })
-    
+        const newU = await fetch(`http://localhost:8000/api/users/new`, {
+            method: 'post',
+            body: `username=${username}&password=${password}&memberid=${memberid}&permission=${permission}&brigades=${brigades}`,
+            headers: { 
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": `Bearer ${req.cookies.token}`
+            }
+        })
+        const data = await newU.json()
+    } catch (e) {
+        console.error(e)
+    }
 }
 
 /**
@@ -290,33 +288,25 @@ exports.removeUser = (req, res) => {
 /**
  * Controller to update to /api/users
  */
-exports.editUser = (req, res) => {
-    const { username, password, permission } = req.body
-    const user = req.user
+exports.editUser = async (req, res) => {
+    try {
+        const { username, memberID, password, permission, brigades } = req.body
+        const user = req.user
 
-    console.log(req.body);
+        const newU = await fetch(`http://localhost:8000/api/users/${req.params.id}`, {
+            method: 'post',
+            body: `username=${username}&password=${password}&memberid=${memberID}&permission=${permission}&brigades=${brigades}`,
+            headers: { 
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": `Bearer ${req.cookies.token}`
+            }
+        })
+        const data = await newU.json()
 
-    let brigades = []
-    user.brigades.forEach(brigade => {
-        brigades.push(brigade.brigadeID)
-    });
-
-    request.post({
-        url: `http://localhost:8000/api/users/${req.params.id}`,
-        'auth': {
-            'bearer': req.cookies.token
-        },
-        form: {
-            username: username,
-            password: password,
-            permission: permission,
-            brigade: brigades
-        },
-    }, (error, response, body) => {
-        const info = JSON.parse(body)
-
-        res.status(200).json({ id: info.userID })
-    })
+        res.status(200).json({ id: data.id })
+    } catch (e) {
+        console.error(e.stack)
+    }
 }
 
 /**
