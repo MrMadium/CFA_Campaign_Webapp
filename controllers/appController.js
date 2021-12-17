@@ -211,7 +211,7 @@ exports.getAccounts = async (req, res) => {
                 username: user.user,
                 hash: user.hash,
                 role: user.role,
-                brigade: data,
+                brigade: user.brigades.map(b => { return b.brigadeName }),
                 accounts: data
             }})
         }
@@ -240,13 +240,8 @@ exports.getAccounts = async (req, res) => {
  */
 exports.createUser = async (req, res) => {
     try {
-        const { username, memberid, password, permission } = req.body
+        const { username, memberid, password, permission, brigades } = req.body
         const user = req.user
-
-        let brigades = []
-        user.brigades.forEach(brigade => {
-            brigades.push(brigade.brigadeID)
-        });
 
         const newU = await fetch(`http://localhost:8000/api/users/new`, {
             method: 'post',
@@ -265,20 +260,18 @@ exports.createUser = async (req, res) => {
 /**
  * Controller to delete to /api/users
  */
-exports.removeUser = (req, res) => {
-    const { username, password, permission } = req.body
+exports.removeUser = async (req, res) => {
+    try {
+        const { username, password, permission } = req.body
 
-    request.delete({
-        url: `http://localhost:8000/api/users/${req.params.id}`,
-        'auth': {
-            'bearer': req.cookies.token
-        }
-    }, (error, response, body) => {
-        const info = JSON.parse(body)
-
-        console.log(info);
-    })
-    
+        
+        const r = await fetch(`http://localhost:8000/api/users/${req.params.id}`, {
+            method: 'delete',
+            headers: { "Authorization": `Bearer ${req.cookies.token}`}
+        })
+    } catch (e) {
+        console.error(e.stack)
+    }
 }
 
 /**
@@ -286,12 +279,12 @@ exports.removeUser = (req, res) => {
  */
 exports.editUser = async (req, res) => {
     try {
-        const { username, memberID, password, permission, brigades } = req.body
+        const { username, memberid, password, permission, brigades } = req.body
         const user = req.user
 
         const newU = await fetch(`http://localhost:8000/api/users/${req.params.id}`, {
             method: 'post',
-            body: `username=${username}&password=${password}&memberid=${memberID}&permission=${permission}&brigades=${brigades}`,
+            body: `username=${username}&password=${password}&memberid=${memberid}&permission=${permission}&brigades=${brigades}`,
             headers: { 
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": `Bearer ${req.cookies.token}`

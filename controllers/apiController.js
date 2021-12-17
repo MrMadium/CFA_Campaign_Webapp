@@ -157,13 +157,14 @@ exports.getUser = async (req, res) => {
 
 exports.newUser = async (req, res) => {
     try {
-        const { username, password, permission, brigades } = req.body
+        const { username, memberid, password, permission, brigades } = req.body
 
         const user = await sequelize.transaction(async (t) => {
 
             const user = await User.create({
                 userName: username,
                 hash: password,
+                memberID: memberid,
                 permissionLevel: permission
             }, { transaction: t });
         

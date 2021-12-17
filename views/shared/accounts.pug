@@ -7,9 +7,12 @@ block layout-content
       if user.role == 'ROLE_SUPERVISOR'
         .header.bg-secondary.py-3.rounded.text-white.text-center
           h2 Accounts
-          h5 
-            each b in user.brigade
-              i=b.name
+          h5
+            each name, index in user.brigade
+              if index == user.brigade.length - 1
+                | #{name}
+              else
+                | #{name} - 
 
         if user.brigade
           .account-table
@@ -88,9 +91,10 @@ block scripts
                   dataType: 'json',
                   data: {
                     username: columns[0],
-                    memberID: columns[1],
+                    memberid: columns[1],
                     password: columns[2],
-                    permission: columns[3]
+                    permission: columns[3],
+                    brigades: columns[4]
                   },
                   success: function( data, textStatus, jQxhr ){
                       TableEditor.table.find('tr:last').find('th').html(data.id)
@@ -107,7 +111,7 @@ block scripts
                   dataType: 'json',
                   data: {
                     username: data[0],
-                    memberID: data[1],
+                    memberid: data[1],
                     password: data[2],
                     permission: data[3],
                     brigades: data[4]
