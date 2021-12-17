@@ -49,8 +49,8 @@ app.use("/", appRoutes)
 db.sequelize.sync().then(() => {
     console.log('Application has synced with the database successfully.');
     http.listen(port, () => {
-        console.log(`App listening at http://localhost:${port}`);
+        console.log(`App listening at http://localhost:${port}\n`);
     })
 }).catch(err => {
-    console.log("Database Connection Failed: " + err); // Catch error if related to Sequelize.
+    console.log("Database Sync Failed: " + err.stack); // Catch error if related to Sequelize.
 })

@@ -182,10 +182,10 @@ exports.newUser = async (req, res) => {
         
     } catch (e) {
         if (e.name == 'SequelizeUniqueConstraintError') {
-            res.status(404).send({ message: 'Username already exists.' })
+            return res.status(404).send({ message: 'Username already exists.' })
         } 
         else if (e.name == 'SequelizeForeignKeyConstraintError') {
-            res.status(404).send({ message: `${e.table} not found.` })
+            return res.status(404).send({ message: `${e.table} not found.` })
         } 
         else {
             console.error(e.stack)
@@ -263,13 +263,13 @@ exports.updateUser = async (req, res) => {
         
     } catch (e) {
         if (e.name == 'SequelizeUniqueConstraintError') {
-            res.status(404).send({ message: 'Username already exists.' })
+            return status(404).send({ message: 'Username already exists.' })
         } 
         else if (e.name == 'SequelizeForeignKeyConstraintError') {
-            res.status(404).send({ message: `${e.table} not found.` })
+            return res.status(404).send({ message: `${e.table} not found.` })
         } 
         else if (e.name == 'SequelizeDatabaseError') {
-            res.status(404).send({ message: 'Bad Request.' })
+            return res.status(404).send({ message: 'Bad Request.' })
         } 
         else {
             console.error(e.name)
@@ -546,7 +546,7 @@ exports.newAppliance = async (req, res) => {
         })       
     } catch (e) {
         if (e.name == 'SequelizeForeignKeyConstraintError') {
-            res.status(404).send({ message: `${e.table} not found.` })
+            return res.status(404).send({ message: `${e.table} not found.` })
         } 
         else {
             console.error(e.stack)

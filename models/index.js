@@ -16,6 +16,14 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
+sequelize.authenticate()
+  .then(function(err) {
+      console.log(`Sequelize has established a connection to 'cfa' on Env: ${env.toUpperCase()}`);
+  })
+  .catch(function (err) {
+      console.log(`Unable to connect to the database 'cfa' on Env: ${env.toUpperCase()}:, ${err.name}`);
+  });
+
 fs
   .readdirSync(__dirname)
   .filter(file => {
