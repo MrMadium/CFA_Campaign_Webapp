@@ -6,6 +6,30 @@ block layout-content
       h2.text-center Appliances
       if appliances.length
         each a in appliances
-          a.list-group-item.shadow.rounded.mb-4(href=`/${campaign}/${a.id}`)= a.name
+          .row.item.shadow.rounded.mb-4
+            .col-11(data-item=a.id)
+              a.list-group-item.border-0(href=`/${campaign}/${a.id}`)= a.name
+            .col-1.m-auto.available
+              | ●
+
       else 
         p.text-center There are no appliances available for this campaign.
+
+block scripts
+  script(src="/socket.io-3.0.5.min.js")
+  script.
+    $(document).ready(() => {
+      const socket = io("/aList")
+
+      socket.on("activateAppliance", (a) => {
+        console.log("An appliance has become active.")
+        $(`div[data-item=${a}] + .available`).addClass("unavailable")
+        $(`div[data-item=${a}] + .unavailable`).removeClass("available")
+      })
+
+      socket.on("deactivateAppliance", (a) => {
+        console.log("An appliance has become deactive.")
+        $(`div[data-item=${a}] + .unavailable`).addClass("available")
+        $(`div[data-item=${a}] + .available`).removeClass("unavailable")
+      })
+    })

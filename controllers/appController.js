@@ -3,6 +3,7 @@ const env = process.env.NODE_ENV || 'development'
 const config = require('../config/config.json')
 const { objArrayToArray,
         verifyToken } = require("../util/helpers")
+let { applianceArray } = require("../util/applianceArray")
 
 /**
  * Controllers for authentication
@@ -306,29 +307,15 @@ exports.getBrigades = (req, res) => {
 
     if (user.role === 'ROLE_SUPERVISOR') {
 
-        let brigades = []
-        user.brigades.forEach(brigade => {
-            brigades.push(brigade.brigadeID)
-        })
-
-        request.get({
-            url: `http://localhost:8000/api/brigades/${brigades}`,
-            'auth': {
-                'bearer': req.cookies.token
+        res.render('shared/brigades', { user: {
+            id: user.id,
+            username: user.user,
+            role: user.role,
+            brigade: {
+                name: ['a', 'b'],
+                objects: []
             }
-        }, (error, response, body) => {
-            const info = JSON.parse(body);
-
-            return res.render('shared/brigades', { user: {
-                id: user.id,
-                username: user.user,
-                role: user.role,
-                brigade: {
-                    name: ['a', 'b'],
-                    objects: info
-                }
-            }})
-        })
+        }})
     }
 
     if (user.role === 'ROLE_ADMIN') {

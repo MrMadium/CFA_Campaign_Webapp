@@ -1,20 +1,16 @@
 /* public/style.css */
 
-.list-group-item {
+.item, .item a {
     background-color: #b8dfb8;
     font-weight: bold;
 }
 
-.tracking-active {
+.available {
     color: green;
-    position: absolute;
-    right: 20px;
 }
 
-.tracking-deactive {
+.unavailable {
     color: red;
-    position: absolute;
-    right: 20px;
 }
 
 .h-10 {

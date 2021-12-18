@@ -12,29 +12,42 @@ var Socket = {
     },
 
     _createListeners: () => {
-        //Socket.io.on("")
+        Socket.io.on("castAccepted", () => {
+            Socket.casting = true
+            Socket._toggleButton()
+        })
+
+        Socket.io.on("castTerminated", () => {
+            Socket.casting = false
+            Socket._toggleButton()
+            console.log("Broadcast has been terminated.");
+        })
     },
 
     _toggleButton: () => {
-        $('#broadcast-btn').toggleClass("btn-danger")
-        $('#broadcast-btn').text((i, text) => {
-            return text === "Begin Broadcasting" ? "Stop Broadcast" : "Begin Broadcasting";
-        })
-        Socket._beginBroadcast() 
+        if (Socket.casting) {
+            $('#broadcast-btn').toggleClass("btn-danger")
+            $('#broadcast-btn').text("Stop Broadcast")
+            Socket._beginBroadcast()
+        } else {
+            $('#broadcast-btn').toggleClass("btn-danger")
+            $('#broadcast-btn').text("Begin Broadcasting")
+        }
     },
 
     _beginBroadcast: () => {
-        if (Socket.casting == false) {
-            Socket.casting = true
-        } else { Socket.casting = false }
-        Socket.casting == true ? Socket.io.emit("activeCast") : Socket.io.emit("terminateCast")
-
+        console.log("Broadcast has been started.");
+        console.log("Loop will start here.");
         // loop here
     },
 
     _bindClickEvents: () => {
         $('button').on("click", () => {
-            Socket._toggleButton()
+            if (Socket.casting) {
+                Socket.io.emit("terminateCast")
+            } else {
+                Socket.io.emit("activeCast", $('#broadcast-btn').attr('data-item'))
+            }
         })
     }
 };

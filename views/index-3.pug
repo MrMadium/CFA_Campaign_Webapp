@@ -6,6 +6,8 @@ block layout-content
       h2.text-center Routes
       if routes.length
         each route in routes
-          a.list-group-item.shadow.rounded.mb-4(href=`/${appliance}/${campaign}/${route.routeID}`)= route.routeName
+          .row.item.shadow.rounded.mb-4
+            .col-11
+              a.list-group-item.border-0(href=`/${campaign}/${appliance}/${route.routeID}`)= route.routeName
       else 
         p.text-center There are no routes available for this campaign.

@@ -1,38 +1,56 @@
-exports = module.exports = function(io) {
-    let applianceLock = []
+const { applianceArray } = require("../util/applianceArray")
 
-    io
-    .of('/index')
-    .on('connection', (socket) => {
+exports = module.exports = function(io) {
+    const route = io.of('/route')
+    const aList = io.of('/aList')
+    
+    route.on('connection', (socket) => {
         console.info(`Server has detected a connection from ${socket.id}.`);
 
-        socket.on("activeCast", () => {
+        socket.on("activeCast", (appliance) => {
             // Add appliance to lock list
-            applianceLock.push(socket.id)
+            applianceArray.push({
+                socketId: socket.id,
+                applianceID: appliance
+            })
+            socket.emit("castAccepted")
             console.info("Server has recieved a broadcast from client.")
+
+            aList.emit("activateAppliance", appliance)
+
+            //console.log(`\n Server applianceLock: ${JSON.stringify(applianceArray)}`);
 
         })
 
         socket.on("terminateCast", () => {
             // Remove appliance from appliance lock.
-            applianceLock.splice(socket.id)
             console.info("Server has recieved a stop broadcast from client.")
+            const i = applianceArray.findIndex((o) =>{
+                return o.socketId === socket.id;
+            })
+            const appliance = applianceArray[i].applianceID
+            if (i !== -1) applianceArray.splice(i, 1);
+            socket.emit("castTerminated")
+
+            aList.emit("deactivateAppliance", appliance)
+
+            //console.log(`\n Server applianceLock: ${JSON.stringify(applianceArray)}`);
         })
 
-        socket.on("locData", () => {
+        socket.on("geoData", () => {
             // Remove appliance from appliance lock.
             console.info("Server has recieved a location data.")
         })
 
         socket.on('disconnect', function () {
             // Remove appliance from appliance lock.
+            const i = applianceArray.findIndex((o) =>{
+                return o.socketId === socket.id;
+            })
+            if (i !== -1) applianceArray.splice(i, 1);
             console.info(`Server has detected ${socket.id} has disconnected.`);
-        });
-    })
 
-    io
-    .of('/route')
-    .on('connection', (socket) => {
-        
+            //console.log(`\n Server applianceLock: ${JSON.stringify(applianceArray)}`);
+        });
     })
 }
