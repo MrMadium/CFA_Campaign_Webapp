@@ -26,7 +26,7 @@ exports.doLogin = async (req, res) => {
         if (!user.ok) return res.render("login", { loginMsg: data.message })
 
         res.cookie('token', data.access_token, {
-            expires: new Date(Date.now() + config[env].jwtExpiry),
+            expires: new Date(Date.now() + (config[env].jwtExpiry * 1000)),
             secure: false,
             httpOnly: true
         })
