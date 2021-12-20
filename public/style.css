@@ -1,8 +1,13 @@
 /* public/style.css */
 
+.fullHeight {
+    height: 90vh;
+}
+
 .item, .item a {
     background-color: #b8dfb8;
     font-weight: bold;
+    font-size: 1.5rem;
 }
 
 .available {
@@ -40,7 +45,30 @@
     border-top-right-radius: 0;
 }
 
+@media only screen and (min-width: 0px) {
+    .info-dash {
+        width: 100%;
+    }
+
+    #broadcast-btn {
+        width: 100% !important;
+    }
+}
+
 @media only screen and (min-width: 992px) {
+    .info-dash {
+        position: absolute;
+        z-index: 1;
+        background: #fff;
+        width: 40%;
+        left: 30%;
+        border-radius: 0 0 5px 5px;
+    }
+
+    #broadcast-btn {
+        width: 50% !important;
+    }
+
     .navbar .navbar-nav .nav-item .nav-link {
       padding: 0 0.5em;
     }

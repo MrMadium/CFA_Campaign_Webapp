@@ -1,11 +1,13 @@
 extends layout
 
 block layout-content
-  div.container-fluid
-    div.row.window-full.text-center
-      h2.h-10= route.name
-      div#map.h-80
-      div.geotracking-btn.h-10.p-1
+  .container-fluid
+    .row.window-full.text-center
+      .info-dash
+        small Route Name:
+        h2.h-10= route.name
+      div#map.fullHeight
+      div.geotracking-btn.h-10.p-1.fixed-bottom
         button#broadcast-btn.btn.btn-primary.w-50.h-100(data-item=appliance) Begin Broadcasting
 
 block scripts
@@ -15,5 +17,21 @@ block scripts
     $(document).ready(() => {
       Socket.init(io, "/route")
     })
+  script.
+    let map;
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 15,
+        center: { lat: -37.85679594009242, lng: 145.310722430348 },
+      });
+      map.data.setStyle({
+        strokeWeight: 10,
+        strokeColor: '#006FFF'
+      })
+      // Hard coded for testing.
+      map.data.addGeoJson(
+        { "type": "Feature", "geometry": !{JSON.stringify(route.geom)}}
+      );
+    }
 
-  script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-mt-i_pr6GyalJImniP1JZuZEIDbikzk&callback=initMap")
+  script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-mt-i_pr6GyalJImniP1JZuZEIDbikzk&callback=initMap", async)

@@ -3,13 +3,13 @@ extends layout
 block layout-content
   div.container
     div#route-list.list-group.p-5
-      h2.text-center Appliances
+      h1.pb-4.text-center Appliances
       if appliances.length
         each a in appliances
           .row.item.shadow.rounded.mb-4
             .col-11(data-item=a.id)
-              a.list-group-item.border-0(href=`/${campaign}/${a.id}`)= a.name
-            .col-1.m-auto.available
+              a.list-group-item.border-0.py-3(href=`/${campaign}/${a.id}`)= a.name
+            .col-1.m-auto.available.text-center
               | ●
 
       else 

@@ -3,11 +3,11 @@ extends layout
 block layout-content
   div.container
     div#route-list.list-group.p-5
-      h2.text-center Campaigns
+      h1.pb-4.text-center Campaigns
       if appliances.length
         each appliance in appliances
           .row.item.shadow.rounded.mb-4
-            .col-11
-              a.list-group-item.border-0(href=`${appliance.id}`)= appliance.name
+            .col-12
+              a.list-group-item.border-0.py-3(href=`${appliance.id}`)= appliance.name
       else 
         p.text-center There are no appliances for your Brigade.

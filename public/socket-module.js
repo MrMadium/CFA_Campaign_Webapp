@@ -35,10 +35,20 @@ var Socket = {
         }
     },
 
+    _startLoop: () => {
+        const castLoop = setInterval(() => {
+            if (Socket.casting) {
+                console.log("i am looping now...")
+            } else {
+                clearInterval(castLoop)
+            }
+        }, 5000);
+    },
+
     _beginBroadcast: () => {
         console.log("Broadcast has been started.");
         console.log("Loop will start here.");
-        // loop here
+        Socket._startLoop()
     },
 
     _bindClickEvents: () => {
