@@ -3,11 +3,11 @@ extends layout
 block layout-content
   div.container
     div#route-list.list-group.p-5
-      h2.text-center Routes
+      h1.pb-4.text-center Routes
       if routes.length
         each route in routes
           .row.item.shadow.rounded.mb-4
-            .col-11
-              a.list-group-item.border-0(href=`/${campaign}/${appliance}/${route.routeID}`)= route.routeName
+            .col-12
+              a.list-group-item.border-0.py-3(href=`/${campaign}/${appliance}/${route.routeID}`)= route.routeName
       else 
         p.text-center There are no routes available for this campaign.
