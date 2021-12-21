@@ -1,9 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\config",
-    "\\models"
+    "\\controllers",
+    "\\routes",
+    "\\views\\admin",
+    "\\views\\shared"
   ],
-  "SelectedNode": "\\models\\Campaign.js",
+  "SelectedNode": "\\controllers\\apiController.js",
   "PreviewInSolutionExplorer": false
 }
