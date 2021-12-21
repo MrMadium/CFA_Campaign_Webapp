@@ -4,11 +4,11 @@ block layout-content
   div.container.text-center.py-5
     h2 Welcome
     form#login-form(action='/login', method='POST')
-        .form-group
+        .input-group.input-group-lg
             input.form-control(type='text', name='username', placeholder='Username' required)
-        .form-group
+        .input-group.input-group-lg
             input.form-control(type='password', name='password', placeholder='Password')
         if loginMsg
             .alert.alert-danger
                 =loginMsg
-        input.form-control.btn.btn-dark(type='submit', value='Login')
+        input.form-control.btn.btn-dark.btn-lg(type='submit', value='Login')
