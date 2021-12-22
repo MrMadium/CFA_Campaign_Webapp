@@ -12,8 +12,14 @@
 # limitations under the License.
 #
 # [START bookshelf_app_yml]
-runtime: nodejs14
 
+runtime: nodejs14
+env: standard
 instance_class: F1
+automatic_scaling:
+  min_idle_instances: automatic
+  max_idle_instances: automatic
+  min_pending_latency: automatic
+  max_pending_latency: automatic
 
 # [END bookshelf_app_yml]
