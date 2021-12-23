@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon ./index.js",
-    "reset:db": "sequelize-cli db:drop && sequelize-cli db:create"
+    "reset:db": "sequelize-cli db:drop && sequelize-cli db:create",
+    "yaml": "nodemon models/testing_yaml.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +16,7 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "js-yaml": "^4.1.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
     "node-fetch": "^2.6.0",

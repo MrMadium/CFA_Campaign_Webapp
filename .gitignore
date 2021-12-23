@@ -3,3 +3,4 @@
 .DS_Store
 /config/config.json
 /.vs/
+env_variables.yaml
