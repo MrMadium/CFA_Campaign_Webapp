@@ -162,6 +162,7 @@ exports.getRoute = async (req, res) => {
                 username: user.user,
                 role: user.role
             },
+            gApi: config.google_api.key,
             appliance: req.params.appliance,
             campaign: req.params.campaign,
             route: data
