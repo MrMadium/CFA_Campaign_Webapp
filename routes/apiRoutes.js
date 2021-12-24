@@ -19,9 +19,9 @@ api.post('/auth/login', api_controller.authUser)
 /**
  * Users Route Handler
  */
-api.get('/users/all', api_controller.getUsers)
+api.get('/users/all', apiSecured, api_controller.getUsers)
 
-api.post('/users/new', api_controller.newUser)
+api.post('/users/new', apiSecured, api_controller.newUser)
 
 api.get('/users/brigade/:id', apiSecured, api_controller.getUsersByBrigade)
 
