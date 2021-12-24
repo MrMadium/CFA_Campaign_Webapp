@@ -6,7 +6,8 @@ const { objArrayToArray,
 let { applianceArray } = require("../util/applianceArray")
 const host = config[env].appUrl
 
-/**
+
+/**s
  * Controllers for authentication
  */
 exports.getLogin = (req, res) => {
