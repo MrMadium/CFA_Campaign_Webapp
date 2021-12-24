@@ -4,7 +4,7 @@ const config = require('../config/config.json')
 const { objArrayToArray,
         verifyToken } = require("../util/helpers")
 let { applianceArray } = require("../util/applianceArray")
-const host = `${config[env].appUrl}:${process.env.PORT}`
+const host = config[env].appUrl
 
 /**
  * Controllers for authentication
