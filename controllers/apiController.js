@@ -13,6 +13,8 @@ const {
     Campaign,
     Route,
     sequelize } = require("../models");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const db = require('../models');
 
 /**
@@ -29,6 +31,7 @@ exports.authUser = async (req, res) => {
     try {
         const { username, password } = req.body
         
+        // Remove hash: null for bcrypt password.
         const user = await User.findOne({
             where: { username: username, hash: null },
             include: [Brigade,Permission]
@@ -37,6 +40,15 @@ exports.authUser = async (req, res) => {
         if (!user) {
             return res.status(404).send({ message: "Username or password incorrect." })
         }
+
+        // Uncomment for bcrypt passwords.
+        /*
+        const match = await bcrypt.compare(password, user.hash);
+
+        if(!match) {
+            return res.status(404).send({ message: "Username or password incorrect." })
+        }
+        */
 
         const userRole = await user.getPermission()
 
@@ -159,11 +171,13 @@ exports.newUser = async (req, res) => {
     try {
         const { username, memberid, password, permission, brigades } = req.body
 
+        const encPass = await bcrypt.hash(password, saltRounds)
+
         const user = await sequelize.transaction(async (t) => {
 
             const user = await User.create({
                 userName: username,
-                hash: password,
+                hash: encPass,
                 memberID: memberid,
                 permissionLevel: permission
             }, { transaction: t });
@@ -227,7 +241,8 @@ exports.updateUser = async (req, res) => {
     try {
         const { username, memberid, password, permission, brigades } = req.body
 
-        console.log(req.body);
+        // Uncomment for bcrypt passwords.
+        //const encPass = await bcrypt.hash(password, saltRounds)
 
         const user = await sequelize.transaction(async (t) => {
 
@@ -241,6 +256,7 @@ exports.updateUser = async (req, res) => {
                 return res.status(404).send({ message: 'User not found.' })
             }
 
+            // Change hash: encPass for bcrypt passwords.
             await User.update({
                 userName: username,
                 hash: password == '' ? null : password,
