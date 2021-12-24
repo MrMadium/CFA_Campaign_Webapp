@@ -4,6 +4,7 @@ const config = require('../config/config.json')
 const { objArrayToArray,
         verifyToken } = require("../util/helpers")
 let { applianceArray } = require("../util/applianceArray")
+const host = `${config[env].appUrl}:${process.env.PORT}`
 
 /**
  * Controllers for authentication
@@ -16,7 +17,7 @@ exports.doLogin = async (req, res) => {
     try {
         const { username, password } = req.body
 
-        const user = await fetch('http://localhost:8000/api/auth/login', {
+        const user = await fetch(`${host}/api/auth/login`, {
             method: 'post',
             body: `username=${username}&password=${password}`,
             headers: { "Content-Type": "application/x-www-form-urlencoded" }
@@ -67,7 +68,7 @@ exports.index = async (req, res) => {
             })
         }
 
-        const a = await fetch(`http://localhost:8000/api/campaigns/status/1,2`, {
+        const a = await fetch(`${host}/api/campaigns/status/1,2`, {
             headers: { "Authorization": `Bearer ${req.cookies.token}`}
         })
         const data = await a.json()
@@ -96,7 +97,7 @@ exports.getCampaignAppliances = async (req, res) => {
 
         const brigArray = objArrayToArray(user.brigades, "brigadeID")
 
-        const c = await fetch(`http://localhost:8000/api/appliances/campaign/${req.params.campaign}`, {
+        const c = await fetch(`${host}/api/appliances/campaign/${req.params.campaign}`, {
                 headers: { "Authorization": `Bearer ${req.cookies.token}`}
         })
         const data = await c.json()
@@ -122,7 +123,7 @@ exports.getCampaignRoutes = async (req, res) => {
     try {
         const user = req.user
 
-        const r = await fetch(`http://localhost:8000/api/routes/campaign/${req.params.campaign}`, {
+        const r = await fetch(`${host}/api/routes/campaign/${req.params.campaign}`, {
                 headers: { "Authorization": `Bearer ${req.cookies.token}`}
         })
         const data = await r.json()
@@ -149,7 +150,7 @@ exports.getRoute = async (req, res) => {
     try {
         const user = req.user
 
-        const r = await fetch(`http://localhost:8000/api/routes/${req.params.route}`, {
+        const r = await fetch(`${host}/api/routes/${req.params.route}`, {
                 headers: { "Authorization": `Bearer ${req.cookies.token}`}
         })
         const data = await r.json()
@@ -202,7 +203,7 @@ exports.getAccounts = async (req, res) => {
         if (user.role == 'ROLE_SUPERVISOR') {
             const brigades = objArrayToArray(user.brigades, "brigadeID")
 
-            const r = await fetch(`http://localhost:8000/api/users/brigade/${brigades}`, {
+            const r = await fetch(`${host}/api/users/brigade/${brigades}`, {
                     headers: { "Authorization": `Bearer ${req.cookies.token}`}
             })
             const data = await r.json()
@@ -218,7 +219,7 @@ exports.getAccounts = async (req, res) => {
         }
 
         if (user.role == 'ROLE_ADMIN') {
-            const r = await fetch('http://localhost:8000/api/users/all', {
+            const r = await fetch(`${host}/api/users/all`, {
                     headers: { "Authorization": `Bearer ${req.cookies.token}`}
             })
             const data = await r.json()
@@ -244,7 +245,7 @@ exports.createUser = async (req, res) => {
         const { username, memberid, password, permission, brigades } = req.body
         const user = req.user
 
-        const newU = await fetch(`http://localhost:8000/api/users/new`, {
+        const newU = await fetch(`${host}/api/users/new`, {
             method: 'post',
             body: `username=${username}&password=${password}&memberid=${memberid}&permission=${permission}&brigades=${brigades}`,
             headers: { 
@@ -266,7 +267,7 @@ exports.removeUser = async (req, res) => {
         const { username, password, permission } = req.body
 
         
-        const r = await fetch(`http://localhost:8000/api/users/${req.params.id}`, {
+        const r = await fetch(`${host}/api/users/${req.params.id}`, {
             method: 'delete',
             headers: { "Authorization": `Bearer ${req.cookies.token}`}
         })
@@ -283,7 +284,7 @@ exports.editUser = async (req, res) => {
         const { username, memberid, password, permission, brigades } = req.body
         const user = req.user
 
-        const newU = await fetch(`http://localhost:8000/api/users/${req.params.id}`, {
+        const newU = await fetch(`${host}/api/users/${req.params.id}`, {
             method: 'post',
             body: `username=${username}&password=${password}&memberid=${memberid}&permission=${permission}&brigades=${brigades}`,
             headers: { 
