@@ -11,27 +11,15 @@ block layout-content
         button#broadcast-btn.btn.btn-primary.w-50.h-100(data-item=appliance) Begin Broadcasting
 
 block scripts
+  script(src=`https://maps.googleapis.com/maps/api/js?key=${gApi}`)
   script(src="/socket.io-3.0.5.min.js")
   script(src="/socket-module.js")
   script.
     $(document).ready(() => {
-      Socket.init(io, "/route")
-    })
-  script.
-    let map;
-    function initMap() {
-      map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 15,
-        center: { lat: -37.85679594009242, lng: 145.310722430348 },
-      });
-      map.data.setStyle({
-        strokeWeight: 10,
-        strokeColor: '#006FFF'
+      LiveMap.init(io, "/route", {
+        a: !{appliance},
+        c: !{campaign},
+        r: !{JSON.stringify(route)},
+        u: !{user.id}
       })
-      // Hard coded for testing.
-      map.data.addGeoJson(
-        { "type": "Feature", "geometry": !{JSON.stringify(route.geom)}}
-      );
-    }
-
-  script(src=`https://maps.googleapis.com/maps/api/js?key=${gApi}&callback=initMap`, async)
+    })

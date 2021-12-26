@@ -1,4 +1,5 @@
 const { applianceArray } = require("../util/applianceArray")
+const { sequelize } = require("../models");
 
 exports = module.exports = function(io) {
     const route = io.of('/route')
@@ -37,9 +38,15 @@ exports = module.exports = function(io) {
             //console.log(`\n Server applianceLock: ${JSON.stringify(applianceArray)}`);
         })
 
-        socket.on("geoData", () => {
+        socket.on("geoData", async (data) => {
             // Remove appliance from appliance lock.
-            console.info("Server has recieved a location data.")
+            console.info("Server has recieved a location data.: " + JSON.stringify(data))
+            try {
+                await sequelize.query(`CALL setLatLong(${data.lat}, ${data.long}, ${data.route}, ${data.campaign}, '${socket.id}', ${data.user}, ${data.appliance}, @geom)`)
+            }
+            catch (e) {
+                console.log(e)
+            }
         })
 
         socket.on('disconnect', function () {
