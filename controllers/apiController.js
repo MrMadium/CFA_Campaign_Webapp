@@ -148,13 +148,14 @@ exports.newUser = async (req, res) => {
     try {
         const { username, memberid, password, permission, brigades } = req.body
 
-        const encPass = await bcrypt.hash(password, saltRounds)
+        //const encPass = await bcrypt.hash(password, saltRounds)
 
         const user = await sequelize.transaction(async (t) => {
 
             const user = await User.create({
                 userName: username,
-                hash: encPass,
+                //hash: encPass,
+                hash: password,
                 memberID: memberid,
                 permissionLevel: permission
             }, { transaction: t });

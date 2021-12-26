@@ -12,7 +12,9 @@ auth.apiSecured = (req, res, next) => {
         return res.status(401).json('Unauthorised')
     }
 
-    jwt.verify(token.split(" ")[1], 'OURAPPSECRET')
+    const user = verifyToken(token.split(" ")[1])
+
+    req.user = user
 
     next()
 }
@@ -23,7 +25,7 @@ auth.authorize = (roles = []) => {
     }
 
     return (req, res, next) => {
-        // authenticate JWT token and attach user to request object (req.user)
+        if (!req.cookies.token) return res.redirect('/login')
         
         const user = verifyToken(req.cookies.token)
 

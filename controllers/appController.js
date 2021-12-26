@@ -169,15 +169,11 @@ exports.getDashboard = (req, res) => {
     try {
         const user = req.user
     
-        if (token.role === 'ROLE_ADMIN') {
-            return res.render('dashboard', {user: {
-                id: user.id,
-                username: user.user,
-                role: user.role
-            }})
-        }
-        
-        res.status(401).send('Unauthorised')
+        return res.render('admin/dashboard', {user: {
+            id: user.id,
+            username: user.user,
+            role: user.role
+        }})
     } catch (e) {
         console.error(e.stack)
     }
@@ -189,8 +185,6 @@ exports.getDashboard = (req, res) => {
 exports.getAccounts = async (req, res) => {
     try {
         const user = req.user
-
-        if (user.role == 'ROLE_USER') return res.status(404).send("401 Unauthorized")
 
         if (user.role == 'ROLE_SUPERVISOR') {
             const brigades = objArrayToArray(user.brigades, "brigadeID")
@@ -261,7 +255,6 @@ exports.createUser = async (req, res) => {
 exports.removeUser = async (req, res) => {
     try {
         const { username, password, permission } = req.body
-
         
         const r = await fetch(`${host}/api/users/${req.params.id}`, {
             method: 'delete',
@@ -278,7 +271,6 @@ exports.removeUser = async (req, res) => {
 exports.editUser = async (req, res) => {
     try {
         const { username, memberid, password, permission, brigades } = req.body
-        const user = req.user
 
         const newU = await fetch(`${host}/api/users/${req.params.id}`, {
             method: 'post',
