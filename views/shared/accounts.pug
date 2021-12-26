@@ -24,6 +24,7 @@ block layout-content
                   th(scope='col') member ID
                   th(scope='col') Hash
                   th(scope='col') Permission ID
+                  th(scope='col') Brigade
               tbody
                 each a in user.accounts
                   tr
@@ -32,6 +33,12 @@ block layout-content
                     td= a.memberID
                     td= a.hash
                     td= a.Permission.slice(5)
+                    td(tetype='pills')
+                      each brigade, index in a.Brigades
+                        if index == a.Brigades.length - 1
+                          | #{brigade.brigadeName}
+                        else 
+                          | #{brigade.brigadeName}, 
                         
         else
           p.text-center.p-4 There are no accounts to display.

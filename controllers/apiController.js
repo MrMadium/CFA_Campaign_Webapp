@@ -15,7 +15,6 @@ const {
     sequelize } = require("../models");
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const db = require('../models');
 
 /**
  * Controller for /api/

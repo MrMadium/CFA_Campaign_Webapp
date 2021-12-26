@@ -60,15 +60,6 @@ exports.doLogout = async (req, res) => {
 exports.index = async (req, res) => {
     try {
         const user = req.user
-        if (user.role === 'ROLE_ADMIN') {
-            return res.render('admin/dashboard', {
-                user: {
-                    id: user.id,
-                    username: user.user,
-                    role: user.role
-                }
-            })
-        }
 
         const a = await fetch(`${host}/api/campaigns/all/?status=1&status=2`, {
             headers: { "Authorization": `Bearer ${req.cookies.token}`}

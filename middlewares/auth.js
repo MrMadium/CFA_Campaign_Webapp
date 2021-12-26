@@ -1,3 +1,4 @@
+const req = require('express/lib/request')
 const jwt = require('jsonwebtoken')
 const env = process.env.NODE_ENV || "development"
 const config = require("../config/config.json")
@@ -16,30 +17,24 @@ auth.apiSecured = (req, res, next) => {
     next()
 }
 
-auth.isAuth = async (req, res, next) => {
-    try {
-        const token = req.cookies.token
+auth.authorize = (roles = []) => {
+    if (typeof roles === 'string') {
+        roles = [roles];
+    }
 
-        if (!token) return res.redirect("/login")
-
-        const user = verifyToken(token)
+    return (req, res, next) => {
+        // authenticate JWT token and attach user to request object (req.user)
+        
+        const user = verifyToken(req.cookies.token)
 
         req.user = user
 
-        next()
-
-    } catch (e) {
-        if (e.name == 'TokenExpiredError') {
-            res.cookie('token', null, {
-                expires: new Date(Date.now()),
-                secure: false,
-                httpOnly: true
-            })
-            res.redirect("/login")
-        } else {
-            console.error(e.stack)
+        if (roles.length && !roles.includes(req.user.role)) {
+            return res.status(401).json({ message: 'Unauthorized' });
         }
-    }    
+
+        next()
+    };
 }
 
 module.exports = auth
