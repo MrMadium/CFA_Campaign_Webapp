@@ -41,10 +41,10 @@ var LiveMap = {
                     east: LiveMap.xmax + 0.01
                 }
             },*/
-            zoom: 16
+            zoom: 15
         });
         LiveMap.map.data.setStyle({
-            strokeWeight: 10,
+            strokeWeight: 6,
             strokeColor: '#006FFF'
         })
         LiveMap.map.data.addGeoJson(
