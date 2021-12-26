@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js",
+    "start": "pm2 start index.js --watch",
     "stop": "pm2 stop all",
     "dev": "nodemon ./index.js",
     "reset:db": "sequelize-cli db:drop && sequelize-cli db:create"

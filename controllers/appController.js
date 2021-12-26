@@ -2,7 +2,8 @@ const fetch = require('node-fetch')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../config/config.json')
 const { objArrayToArray,
-        verifyToken } = require("../util/helpers")
+        verifyToken,
+        arrayToUrlParams } = require("../util/helpers")
 let { applianceArray } = require("../util/applianceArray")
 const host = config[env].appUrl
 
@@ -69,7 +70,7 @@ exports.index = async (req, res) => {
             })
         }
 
-        const a = await fetch(`${host}/api/campaigns/status/1,2`, {
+        const a = await fetch(`${host}/api/campaigns/all/?status=1&status=2`, {
             headers: { "Authorization": `Bearer ${req.cookies.token}`}
         })
         const data = await a.json()
@@ -96,9 +97,7 @@ exports.getCampaignAppliances = async (req, res) => {
     try {
         const user = req.user
 
-        const brigArray = objArrayToArray(user.brigades, "brigadeID")
-
-        const c = await fetch(`${host}/api/appliances/campaign/${req.params.campaign}`, {
+        const c = await fetch(`${host}/api/appliances/all/?campaign=${req.params.campaign}`, {
                 headers: { "Authorization": `Bearer ${req.cookies.token}`}
         })
         const data = await c.json()
@@ -124,7 +123,7 @@ exports.getCampaignRoutes = async (req, res) => {
     try {
         const user = req.user
 
-        const r = await fetch(`${host}/api/routes/campaign/${req.params.campaign}`, {
+        const r = await fetch(`${host}/api/routes/all/?campaign=${req.params.campaign}`, {
                 headers: { "Authorization": `Bearer ${req.cookies.token}`}
         })
         const data = await r.json()
@@ -205,7 +204,11 @@ exports.getAccounts = async (req, res) => {
         if (user.role == 'ROLE_SUPERVISOR') {
             const brigades = objArrayToArray(user.brigades, "brigadeID")
 
-            const r = await fetch(`${host}/api/users/brigade/${brigades}`, {
+            const params = brigades.map(b => {
+                return 'brigade=' + b
+            }).join('&');
+
+            const r = await fetch(`${host}/api/users/all/?${params}`, {
                     headers: { "Authorization": `Bearer ${req.cookies.token}`}
             })
             const data = await r.json()

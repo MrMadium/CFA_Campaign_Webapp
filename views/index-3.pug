@@ -8,6 +8,6 @@ block layout-content
         each route in routes
           .row.item.shadow.rounded.mb-4
             .col-12
-              a.list-group-item.border-0.py-3(href=`/${campaign}/${appliance}/${route.routeID}`)= route.routeName
+              a.list-group-item.border-0.py-3(href=`/${campaign}/${appliance}/${route.id}`)= route.name
       else 
         p.text-center There are no routes available for this campaign.

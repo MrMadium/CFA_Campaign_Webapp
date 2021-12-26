@@ -19,11 +19,9 @@ api.post('/auth/login', api_controller.authUser)
 /**
  * Users Route Handler
  */
-api.get('/users/all', apiSecured, api_controller.getUsers)
+api.get('/users/all/:brigade?', apiSecured, api_controller.getUsers)
 
 api.post('/users/new', apiSecured, api_controller.newUser)
-
-api.get('/users/brigade/:id', apiSecured, api_controller.getUsersByBrigade)
 
 api.get('/users/:id', apiSecured, api_controller.getUser)
 
@@ -49,12 +47,9 @@ api.delete('/roles/:id', apiSecured, api_controller.removeRole)
 /**
  * Appliances Route Handler
  */
-api.get('/appliances', apiSecured, api_controller.getAppliances)
-
+api.get('/appliances/all/:campaign?', apiSecured, api_controller.getAppliances)
 
 api.get('/appliances/:id', apiSecured, api_controller.getAppliance)
-
-api.get('/appliances/campaign/:id', apiSecured, api_controller.getApplianceByCampaign)
 
 api.put('/appliances/:id', apiSecured, api_controller.updateAppliance)
 
@@ -94,9 +89,7 @@ api.delete('/brigades/:id', apiSecured, api_controller.removeBrigade)
 /**
  * Campaign Route Handler
  */
-api.get('/campaigns', apiSecured, api_controller.getCampaigns)
-
-api.get('/campaigns/status/:status', apiSecured, api_controller.getCampaignsByStatus)
+api.get('/campaigns/all/:status?', apiSecured, api_controller.getCampaigns)
 
 api.get('/campaigns/:id', apiSecured, api_controller.getCampaign)
 
@@ -110,9 +103,7 @@ api.delete('/campaigns/:id', apiSecured, api_controller.removeCampaign)
 /**
  * Routes Route Handler
  */
-api.get('/routes', apiSecured, api_controller.getRoutes)
-
-api.get('/routes/campaign/:campaignId', apiSecured, api_controller.getRoutesByCampaign)
+api.get('/routes/all/:campaign?', apiSecured, api_controller.getRoutes)
 
 api.get('/routes/:id', apiSecured, api_controller.getRoute)
 

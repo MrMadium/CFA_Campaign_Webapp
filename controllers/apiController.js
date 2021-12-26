@@ -82,8 +82,14 @@ exports.authUser = async (req, res) => {
  */
 exports.getUsers = async (req, res) => {
     try {
+        const filter = {
+            brigadeID: req.query.brigade
+        }
         const users = await User.findAll({
-            include: [Brigade, Permission]
+            include: [{
+                model: Brigade,
+                where: req.query.brigade ? filter : null
+            }, Permission]
         })
 
         if (!users) {
@@ -96,34 +102,6 @@ exports.getUsers = async (req, res) => {
             hash: u.hash,
             memberID: u.memberID,
             Permission: `ROLE_${u.Permission.permissionName.toUpperCase()}`,
-            Brigades: u.Brigades.map(b => { return {brigadeID: b.brigadeID, brigadeName: b.brigadeName}})
-        } }))
-    } catch (e) {
-        console.error(e.stack);
-    }
-}
-
-exports.getUsersByBrigade = async (req, res) => {
-    try {
-        const users = await User.findAll({
-            include: [{
-                model: Brigade,
-                where: {
-                    brigadeID: [13781]
-                }
-            }, Permission]
-        })
-
-        if (!users) {
-            return res.status(404).send({ message: "No users." })
-        }
-
-        res.status(200).send(users.map(u => { return {
-            id: u.userID,
-            username: u.userName,
-            hash: u.hash,
-            memberID: u.memberID,
-            Permission: u.Permission.permissionName,
             Brigades: u.Brigades.map(b => { return {brigadeID: b.brigadeID, brigadeName: b.brigadeName}})
         } }))
     } catch (e) {
@@ -431,8 +409,15 @@ exports.removeRole = async (req, res) => {
  */
 exports.getAppliances = async (req, res) => {
     try {
+        const filter = {
+            campaignID: req.query.campaign
+        }
+
         const appliances = await Appliance.findAll({
-            include: [Brigade, ApplianceClass]
+            include: [Brigade, ApplianceClass, {
+                model: Campaign,
+                where: req.query.campaign ? filter : {}
+            }]
         })
 
         if (!appliances) {
@@ -447,37 +432,6 @@ exports.getAppliances = async (req, res) => {
                 class: a.ApplianceClass.applianceName
             }
         }))
-    } catch (e) {
-        console.error(e.stack)
-    }
-}
-
-exports.getCampaignsByStatus = async (req, res) => {
-    try {
-        const c = await Campaign.findAll({
-            where: {
-                campaignStatus: [1,2]
-            },
-            include: [Brigade]
-        })
-
-        if (!c) {
-            return res.status(404).send({ message: 'Campaigns not found.' })
-        }
-
-        res.status(200).send(c.map(c => {
-            return {
-                id: c.campaignID,
-                name: c.campaignName,
-                brigade: c.Brigade.brigadeName,
-                start: c.campaignStart,
-                end: c.campaignEnd,
-                notes: c.campaignNotes,
-                status: c.campaignStatus
-            }
-        }))
-
-        
     } catch (e) {
         console.error(e.stack)
     }
@@ -900,7 +854,13 @@ exports.removeBrigade = async (req, res) => {
  */
 exports.getCampaigns = async (req, res) => {
     try {
-        const campaigns = await Campaign.findAll()
+        const filter = {
+            campaignStatus: req.query.status
+        }
+
+        const campaigns = await Campaign.findAll({
+            where: req.query.status ? filter : {}
+        })
 
         if (!campaigns) {
             return res.status(404).send({ message: "No campaigns." })
@@ -943,30 +903,6 @@ exports.getCampaign = async (req, res) => {
             notes: campaign.campaignNotes,
             status: campaign.campaignStatus
         })
-    } catch (e) {
-        console.error(e.stack)
-    }
-}
-
-exports.getApplianceByCampaign = async (req, res) => {
-    try {
-        const a = await Appliance.findAll({
-            include: [Brigade, {
-                model: Campaign,
-                where: {
-                    campaignID: req.params.id
-                }
-            }],
-        }).catch(err => {
-            console.log(err)
-        })
-    
-        res.send(a.map(a => {
-            return {
-                id: a.applianceID,
-                name: a.publicName
-            }
-        }))
     } catch (e) {
         console.error(e.stack)
     }
@@ -1091,8 +1027,15 @@ exports.removeCampaign = async (req, res) => {
  */
 exports.getRoutes = async (req, res) => {
     try {
+        const filter = {
+            campaignID: req.query.campaign
+        }
+
         const routes = await Route.findAll({
-            include: [Campaign]
+            include: [{
+                model: Campaign,
+                where: req.query.campaign ? filter : {}
+            }]
         })
 
         if (!routes) {
@@ -1133,24 +1076,6 @@ exports.getRoute = async (req, res) => {
             geom: r.routeGeom,
             note: r.routeNote
         })
-    } catch (e) {
-        console.error(e.stack)
-    }
-}
-
-exports.getRoutesByCampaign = async (req, res) => {
-    try {
-        const r = await Route.findAll({
-            where: {
-                campaignID: req.params.campaignId
-            }
-        })
-
-        if (!r) {
-            return res.status(404).send({ message: 'No routes.' })
-        }
-
-        res.status(200).send(r)
     } catch (e) {
         console.error(e.stack)
     }

@@ -21,3 +21,8 @@ exports.objArrayToArray = (arr, k) => {
     })
     return a
 }
+
+exports.arrayToUrlParams = (arr, key) => {
+    console.log(arr)
+    return params
+}

@@ -10,16 +10,16 @@ var TableEditor = {
             onEdit: function() {},
             onAdd: function() {},
             editBtnHTML: `<button id="teEdit" type="button" class="btn btn-sm btn-default">
-                            <span class="fa fa-edit" > </span>
+                            Edit
                         </button>`,
             delBtnHTML: `<button id="teDelete" type="button" class="btn btn-sm btn-default">
-                            <span class="fa fa-trash" > </span>
+                            Delete
                         </button>`,
             accBtnHTML: `<button id="teAccept" type="button" class="btn btn-sm btn-default" style="display:none;">
-                            <span class="fa fa-check-circle" > </span>
+                            Accept
                         </button>`,
             cancelBtnHTML: `<button id="teCancel" type="button" class="btn btn-sm btn-default" style="display:none;">
-                                <span class="fa fa-times-circle" > </span>
+                                Cancel
                             </button>`,
             buttonHTML: () => {
                 let html;

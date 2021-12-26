@@ -31,7 +31,7 @@ block layout-content
                     td= a.username
                     td= a.memberID
                     td= a.hash
-                    td= a.Permission
+                    td= a.Permission.slice(5)
                         
         else
           p.text-center.p-4 There are no accounts to display.
@@ -60,7 +60,7 @@ block layout-content
                     td= account.username
                     td= account.memberID
                     td= account.hash
-                    td= account.Permission
+                    td= account.Permission.slice(5)
                     td(tetype='pills')
                       each brigade, index in account.Brigades
                         if index == account.Brigades.length - 1
