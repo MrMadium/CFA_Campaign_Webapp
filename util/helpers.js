@@ -23,6 +23,9 @@ exports.objArrayToArray = (arr, k) => {
 }
 
 exports.arrayToUrlParams = (arr, key) => {
-    console.log(arr)
+    let params;
+    arr.forEach(i => {
+        params += `${key}=${arr}`
+    })
     return params
 }

@@ -156,7 +156,7 @@ exports.newUser = async (req, res) => {
                 userName: username,
                 //hash: encPass,
                 hash: password,
-                memberID: memberid,
+                memberID: memberid == '' ? null : parseInt(memberid),
                 permissionLevel: permission
             }, { transaction: t });
         
@@ -184,7 +184,7 @@ exports.newUser = async (req, res) => {
             return res.status(404).send({ message: `${e.table} not found.` })
         } 
         else {
-            console.error(e.stack)
+            console.error(e)
         }
     }
 }

@@ -3,7 +3,8 @@ const env = process.env.NODE_ENV || 'development'
 const config = require('../config/config.json')
 const { objArrayToArray,
         verifyToken,
-        arrayToUrlParams } = require("../util/helpers")
+        arrayToUrlParams, 
+        stringToArray} = require("../util/helpers")
 let { applianceArray } = require("../util/applianceArray")
 const host = config[env].appUrl
 
@@ -233,7 +234,14 @@ exports.getAccounts = async (req, res) => {
 exports.createUser = async (req, res) => {
     try {
         const { username, memberid, password, permission, brigades } = req.body
-        const user = req.user
+
+        if (req.user.role == 'ROLE_SUPERVISOR') {
+            const condition = req.user.brigades.some(objElement => {
+                return stringToArray(brigades).includes(String(objElement.brigadeID))
+           })
+
+           if (!condition || permission > 2) return
+        }
 
         const newU = await fetch(`${host}/api/users/new`, {
             method: 'post',
@@ -245,7 +253,7 @@ exports.createUser = async (req, res) => {
         })
         const data = await newU.json()
     } catch (e) {
-        console.error(e)
+        console.error(e.stack)
     }
 }
 
@@ -271,6 +279,25 @@ exports.removeUser = async (req, res) => {
 exports.editUser = async (req, res) => {
     try {
         const { username, memberid, password, permission, brigades } = req.body
+
+        if (req.user.role == 'ROLE_SUPERVISOR') {
+            const condition = req.user.brigades.some(objElement => {
+                return stringToArray(brigades).includes(String(objElement.brigadeID))
+           })
+
+           if (!condition || permission > 2) return res.status(404).json({ message: 'Unauthorized!' })
+
+           const newU = await fetch(`${host}/api/users/${req.params.id}`, {
+                method: 'get',
+                headers: { 
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Authorization": `Bearer ${req.cookies.token}`
+                }
+            })
+            const u = await newU.json()
+
+            if (u.Permission == 'ROLE_ADMIN') return res.status(404).json({ message: 'Unauthorized!' })
+        }
 
         const newU = await fetch(`${host}/api/users/${req.params.id}`, {
             method: 'post',
