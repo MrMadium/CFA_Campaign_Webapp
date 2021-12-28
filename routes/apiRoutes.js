@@ -75,7 +75,7 @@ api.delete('/applianceclasses/:id', apiSecured, api_controller.removeApplianceCl
 /**
  * Brigade Route Handler
  */
-api.get('/brigades/all', apiSecured, api_controller.getBrigades)
+api.get('/brigades/all/:brigade?', apiSecured, api_controller.getBrigades)
 
 api.post('/brigades/new', apiSecured, api_controller.newBrigade)
 

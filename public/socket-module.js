@@ -4,6 +4,8 @@ var LiveMap = {
         LiveMap.map = null
         LiveMap.marker = null
         LiveMap.casting = false
+        LiveMap.geoTrail = null
+        LiveMap.geoArray = []
         LiveMap.data = data
         LiveMap.xmin;
         LiveMap.xmax;
@@ -80,6 +82,8 @@ var LiveMap = {
     },
 
     _startLoop: async () => {
+        const loc = await LiveMap._getCoords()
+        LiveMap._drawToMap(loc)
         const castLoop = setInterval(async () => {
             if (LiveMap.casting) {
                 const loc = await LiveMap._getCoords()
@@ -92,6 +96,7 @@ var LiveMap = {
                     appliance: LiveMap.data.a,
                 }
                 LiveMap.io.emit("geoData", data)
+                LiveMap.geoArray.push({ lat: loc.lat, lng: loc.long })
                 LiveMap._drawToMap(loc)
             } else {
                 clearInterval(castLoop)
@@ -100,8 +105,20 @@ var LiveMap = {
     },
 
     _drawToMap: (data) => {
+        if (LiveMap.marker) LiveMap.marker.setMap(null)
+
+        LiveMap.geoTrail = new google.maps.Polyline({
+            path: LiveMap.geoArray,
+            strokeColor: "#000",
+            strokeWeight: 8
+        }).setMap(LiveMap.map)
+
         latLng = new google.maps.LatLng(data.lat, data.long)
-        LiveMap.marker.setPosition(latLng)
+        LiveMap.marker = new google.maps.Marker({
+            position: { lat: data.lat, lng: data.long},
+            map: LiveMap.map
+        })
+        LiveMap.marker.setMap(LiveMap.map)
     },
 
     _getCoords: async () => {
@@ -125,6 +142,7 @@ var LiveMap = {
         $('button').on("click", () => {
             if (LiveMap.casting) {
                 LiveMap.io.emit("terminateCast")
+                LiveMap.marker.setMap(null)
             } else {
                 LiveMap.io.emit("activeCast", $('#broadcast-btn').attr('data-item'))
             }

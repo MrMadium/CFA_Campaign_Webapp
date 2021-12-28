@@ -699,7 +699,13 @@ exports.removeApplianceClass = async (req, res) => {
  */
 exports.getBrigades = async (req, res) => {
     try {
-        const brigades = await Brigade.findAll()
+        const filter = {
+            brigadeID: req.query.brigade
+        }
+
+        const brigades = await Brigade.findAll({
+            where: req.query.brigade ? filter : {}
+        })
 
         if (!brigades) {
             return res.status(404).send({ message: "No brigades." })

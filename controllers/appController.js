@@ -228,9 +228,6 @@ exports.getAccounts = async (req, res) => {
     }
 }
 
-/**
- * Controller to post to /api/users
- */
 exports.createUser = async (req, res) => {
     try {
         const { username, memberid, password, permission, brigades } = req.body
@@ -257,9 +254,6 @@ exports.createUser = async (req, res) => {
     }
 }
 
-/**
- * Controller to delete to /api/users
- */
 exports.removeUser = async (req, res) => {
     try {
         const { username, password, permission } = req.body
@@ -273,9 +267,6 @@ exports.removeUser = async (req, res) => {
     }
 }
 
-/**
- * Controller to update to /api/users
- */
 exports.editUser = async (req, res) => {
     try {
         const { username, memberid, password, permission, brigades } = req.body
@@ -318,27 +309,45 @@ exports.editUser = async (req, res) => {
 /**
  * Controller for /brigades
  */
-exports.getBrigades = (req, res) => {
+exports.getBrigades = async (req, res) => {
     const user = req.user
 
     if (user.role === 'ROLE_SUPERVISOR') {
+        const brigades = objArrayToArray(user.brigades, "brigadeID")
+
+        const params = brigades.map(b => {
+            return 'brigade=' + b
+        }).join('&');
+
+        const r = await fetch(`${host}/api/brigades/all/?${params}`, {
+                headers: { "Authorization": `Bearer ${req.cookies.token}`}
+        })
+        const data = await r.json()
 
         res.render('shared/brigades', { user: {
             id: user.id,
             username: user.user,
             role: user.role,
             brigade: {
-                name: ['a', 'b'],
-                objects: []
+                objects: data
             }
         }})
     }
 
     if (user.role === 'ROLE_ADMIN') {
+
+        const r = await fetch(`${host}/api/brigades/all/`, {
+            headers: { "Authorization": `Bearer ${req.cookies.token}`}
+        })
+        const data = await r.json()
+
         return res.render('shared/brigades', { user: {
             id: user.id,
             username: user.user,
-            role: user.role
+            role: user.role,
+            brigade: {
+                objects: data
+            }
         }})
     }
 }
@@ -356,17 +365,21 @@ exports.editBrigade = (req, res) => {
 }
 
 
-exports.getCampaigns = (req, res) => {
-    const user = req.user
+exports.getCampaigns = async (req, res) => {
+    try {
+        const user = req.user
 
-    res.render('shared/campaigns', { user: {
-        id: user.id,
-        username: user.user,
-        role: user.role,
-        brigade: {
-            name: user.brigades,
-        }
-    }})
+        res.render('shared/campaigns', { user: {
+            id: user.id,
+            username: user.user,
+            role: user.role,
+            brigade: {
+                name: user.brigades,
+            }
+        }})
+    } catch (e) {
+        console.error(e.stack)
+    }
 }
 
 exports.createCampaign = (req, res) => {
