@@ -156,7 +156,8 @@ exports.getRoute = async (req, res) => {
             gApi: config.google_api.key,
             appliance: req.params.appliance,
             campaign: req.params.campaign,
-            route: data
+            route: data,
+            brigadeGeom: data.brigadeGeom
         })
     } catch (e) {
         console.error(e)

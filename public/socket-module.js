@@ -7,6 +7,7 @@ var LiveMap = {
         LiveMap.geoTrail = null
         LiveMap.geoArray = []
         LiveMap.data = data
+        LiveMap.brigade = null
         LiveMap.xmin;
         LiveMap.xmax;
         LiveMap.ymin;
@@ -52,9 +53,12 @@ var LiveMap = {
         LiveMap.map.data.addGeoJson(
             { "type": "Feature", "geometry": LiveMap.data.r.geom}
         );
-        LiveMap.marker = new google.maps.Marker({
+        LiveMap.brigade = new google.maps.Marker({
+            position: { lat: LiveMap.data.b.coordinates[0], lng: LiveMap.data.b.coordinates[1]},
+            icon: '/img/fire-station.svg',
             map: LiveMap.map
-        });
+        })
+        LiveMap.brigade.setMap(LiveMap.map)
     },
 
     _createListeners: () => {

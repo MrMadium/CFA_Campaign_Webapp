@@ -1068,8 +1068,14 @@ exports.getRoute = async (req, res) => {
             where: {
                 routeID: req.params.id
             },
-            include: [Campaign]
+            include: [{
+                model: Campaign,
+                include: [Brigade]
+            }]
         })
+
+        const c = await r.getCampaign()
+        const b = await c.getBrigade()
 
         if (!r) {
             return res.status(404).send({ message: 'Route not found.' })
@@ -1080,6 +1086,7 @@ exports.getRoute = async (req, res) => {
             name: r.routeName,
             campaign: r.Campaign.campaignName,
             geom: r.routeGeom,
+            brigadeGeom: b.brigadeLocation,
             note: r.routeNote
         })
     } catch (e) {
